@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
+import toJSON from "./plugins/toJSON.plugin.js";
 
 const categorySchema = new mongoose.Schema(
   {
@@ -30,7 +31,9 @@ categorySchema.statics.isSlugTaken = async function (
   });
   return !!category;
 };
+
 categorySchema.plugin(paginate);
+categorySchema.plugin(toJSON);
 const Categories = mongoose.model("Categories", categorySchema);
 
 export default Categories;
