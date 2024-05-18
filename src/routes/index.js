@@ -1,10 +1,10 @@
 import express from "express";
 import categoryRouter from "./category.router.js";
-
+import cartRouter from "./cart.router.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
-
+routes.use("/carts", cartRouter);
 export default routes;
 
 /**
