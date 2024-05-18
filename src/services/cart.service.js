@@ -13,13 +13,11 @@ export const addToCartByIdUser = async (user_ID, cartBody) => {
   if (!cart) {
     cart = await Carts.create({ user_ID: user_ID });
   }
-  console.log(cart);
   const productIndex = cart.products_cart.findIndex(
     (item) =>
       item.products_ID.toString() === cartBody.products_ID &&
       item.variable.toString() === cartBody.variable
   );
-  console.log(productIndex);
   if (productIndex != -1) {
     // Chờ xử lý khi có bảng variable
     cart.products_cart[productIndex].quantity += cartBody.quantity;
@@ -28,4 +26,21 @@ export const addToCartByIdUser = async (user_ID, cartBody) => {
   }
   await cart.save();
   return cart;
+};
+
+export const deleteProductCart = async (user_id, product_cart_id) => {
+  const cart = await Carts.findOne({ user_ID: user_id });
+
+  if (!cart) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Cart not found");
+  }
+  const productIndex = cart.products_cart.findIndex(
+    (product) => product._id.toString() === product_cart_id
+  );
+  if (productIndex !== -1) {
+    cart.products_cart.splice(productIndex, 1);
+    await cart.save();
+  } else {
+    throw new Error("Product not found in cart");
+  }
 };
