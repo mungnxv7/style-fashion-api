@@ -16,6 +16,14 @@ const CSS_URL =
 
 const app = express();
 
+// Middleware để chuyển hướng
+app.use((req, res, next) => {
+  if (req.url === "/") {
+    return res.redirect("https://style-fashion-api.vercel.app/v1/docs");
+  }
+  next();
+});
+
 app.use(bodyParser.json()); // to use body object in requests
 dotenv.config();
 
@@ -32,6 +40,9 @@ const options = {
       description: "API Documentation",
     },
     servers: [
+      {
+        url: "https://style-fashion-api.vercel.app/api/v1",
+      },
       {
         url: "http://localhost:8000/api/v1",
       },
