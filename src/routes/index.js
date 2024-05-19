@@ -3,6 +3,7 @@ import categoryRouter from "./category.router.js";
 import routerUser from "./user.route.js";
 import routerAuth from "./auth.route.js";
 import routerImages from "./image.route.js";
+import cartRouter from "./cart.router.js";
 
 const routes = express.Router();
 
@@ -10,6 +11,7 @@ routes.use("/categories", categoryRouter);
 routes.use("/users", routerUser);
 routes.use("/auth", routerAuth);
 routes.use("/images", routerImages);
+routes.use("/carts", cartRouter);
 
 export default routes;
 
