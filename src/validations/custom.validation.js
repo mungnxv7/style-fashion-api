@@ -17,4 +17,14 @@ const password = (value, helpers) => {
   return value;
 };
 
-export { objectId, password };
+const phoneNumber = (value, helpers) => {
+  const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+  if (!value.match(phoneRegex)) {
+    return helpers.message(
+      "phone number must be a valid Vietnamese phone number"
+    );
+  }
+  return value;
+};
+
+export { objectId, password, phoneNumber };
