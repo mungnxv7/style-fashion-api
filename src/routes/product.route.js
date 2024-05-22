@@ -60,7 +60,7 @@ export default cartRouter;
  *               attributes:
  *                 type: array
  *                 items:
- *                   $ref: '#/components/schemas/Attribute'
+ *                   type: array
  *               gallery:
  *                 type: array
  *                 items:
