@@ -4,7 +4,7 @@ import routerUser from "./user.route.js";
 import routerAuth from "./auth.route.js";
 import routerImages from "./image.route.js";
 import cartRouter from "./cart.router.js";
-
+import productRouter from "./product.route.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
@@ -12,7 +12,7 @@ routes.use("/users", routerUser);
 routes.use("/auth", routerAuth);
 routes.use("/images", routerImages);
 routes.use("/carts", cartRouter);
-
+routes.use("/products", productRouter);
 export default routes;
 
 /**
@@ -32,6 +32,7 @@ export default routes;
  *         id: 5ebac534954b54139806c112
  *         name: Thời trang
  *         slug: thoi-trang
+ *
  *
  *     User:
  *       type: object
@@ -125,5 +126,7 @@ export default routes;
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
+ *
+ *
  *
  */
