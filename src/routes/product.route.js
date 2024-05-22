@@ -30,42 +30,6 @@ export default cartRouter;
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Attribute:
- *       type: object
- *       properties:
- *         color:
- *           type: string
- *         size:
- *           type: string
- *         price:
- *           type: number
- *         stock:
- *           type: number
- *         discount:
- *           type: number
- *         image:
- *           type: string
- *
- *     Products:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *         thumbnail:
- *           type: string
- *         gallery:
- *           type: number
- *         attributes:
- *           type: number
- *         category:
- *           type: number
- *         description:
- *           type: string
- *         video:
- *           type: string
- *
  * /products:
  *   post:
  *     summary: Create a new product
