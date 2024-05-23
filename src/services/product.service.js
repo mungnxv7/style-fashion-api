@@ -12,14 +12,14 @@ const getAllProducts = async (filter, options) => {
 const getProductByID = async (idProduct) => {
   const product = await Products.findOne({ _id: idProduct })
     .populate("attributes")
-    .populate("category");
+    .populate("categories");
 
   return product;
 };
 
 const getProductBySlug = async (slugProduct) => {
   const product = await Products.findOne({ slug: slugProduct })
-    .populate("category")
+    .populate("categories")
     .populate("attributes");
   return product;
 };
@@ -65,8 +65,8 @@ const updateProducts = async (idProduct, bodyProduct) => {
   }
 };
 
-const deleteProductById = async (categoryId) => {
-  const product = await getProductByID(categoryId);
+const deleteProductById = async (productId) => {
+  const product = await getProductByID(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, "Product not found");
   }

@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { objectId } from "./custom.validation.js";
 
-export const getproducts = {
+export const getProducts = {
   query: Joi.object().keys({
     search: Joi.string(),
     sortBy: Joi.string(),
@@ -19,15 +19,16 @@ export const createProduct = {
   body: Joi.object().keys({
     name: Joi.string().required(),
     thumbnail: Joi.string().required(),
-    category: Joi.string().required().custom(objectId),
+    categories: Joi.array().min(1).max(10).items(Joi.string().custom(objectId)),
     attributes: Joi.array()
+      .min(1)
       .max(20)
       .items(
         Joi.object({
           name: Joi.string().required(),
           price: Joi.number().required(),
           stock: Joi.number().required(),
-          discount: Joi.number().allow(null, ""), // Allow null or empty string
+          discount: Joi.number().allow(null, "").default(0), // Allow null or empty string
           image: Joi.string().allow(null, ""), // Allow null or empty string
         })
       )
@@ -45,14 +46,14 @@ export const updateProduct = {
   body: Joi.object().keys({
     name: Joi.string(),
     thumbnail: Joi.string(),
-    category: Joi.string().custom(objectId),
+    categories: Joi.array().min(1).max(10).items(Joi.string().custom(objectId)),
     gallery: Joi.array().max(5).items(Joi.string().allow(null, "")), // Allow empty strings in array
     description: Joi.string(),
     video: Joi.string().allow(null, ""), // Allow null or empty string
   }),
 };
 
-export const deleteproduct = {
+export const deleteProduct = {
   params: Joi.object().keys({
     id: Joi.string().custom(objectId),
   }),

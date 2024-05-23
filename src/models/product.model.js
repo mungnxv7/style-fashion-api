@@ -31,10 +31,20 @@ const productsSchema = new mongoose.Schema(
         message: "No more than 20 attributes are allowed",
       },
     },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Categories",
+    categories: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Categories",
+        },
+      ],
       required: true,
+      validate: {
+        validator: function (val) {
+          return val.length <= 10;
+        },
+        message: "No more than 20 attributes are allowed",
+      },
     },
     description: { type: String, required: true },
     video: { type: String, required: false },
