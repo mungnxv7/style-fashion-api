@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
-import Attributes from "./attribute.model.js";
 import toJSON from "./plugins/toJSON.plugin.js";
 
 const productsSchema = new mongoose.Schema(
@@ -17,14 +16,22 @@ const productsSchema = new mongoose.Schema(
         message: "Gallery cannot have more than 5 items", // Thông báo lỗi nếu kiểm tra thất bại
       },
     },
-    attributes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Attribute",
-        required: true,
-      }, // Định nghĩa attributes là mảng chứa các ObjectId
-    ],
-    categories: {
+    attributes: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Attribute",
+        },
+      ],
+      required: true,
+      validate: {
+        validator: function (val) {
+          return val.length <= 20;
+        },
+        message: "No more than 20 attributes are allowed",
+      },
+    },
+    category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Categories",
       required: true,
