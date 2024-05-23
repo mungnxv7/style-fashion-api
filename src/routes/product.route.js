@@ -3,14 +3,14 @@ import validate from "../middlewares/validate.js";
 import productController from "../controllers/product.controller.js";
 import {
   createProduct,
-  deleteproduct,
+  deleteProduct,
   getProductDetail,
-  getproducts,
+  getProducts,
   updateProduct,
 } from "../validations/products.validation.js";
 const cartRouter = express.Router();
 
-cartRouter.get("/", validate(getproducts), productController.getAll);
+cartRouter.get("/", validate(getProducts), productController.getAll);
 cartRouter.get(
   "/:identifier",
   validate(getProductDetail),
@@ -18,7 +18,7 @@ cartRouter.get(
 );
 cartRouter.post("/", validate(createProduct), productController.create);
 cartRouter.put("/:id", validate(updateProduct), productController.update);
-cartRouter.delete("/:id", validate(deleteproduct), productController.remove);
+cartRouter.delete("/:id", validate(deleteProduct), productController.remove);
 export default cartRouter;
 
 /**
@@ -107,7 +107,7 @@ export default cartRouter;
  *             required:
  *               - name
  *               - thumbnail
- *               - category
+ *               - categories
  *               - description
  *               - attributes
  *               - name
@@ -137,8 +137,10 @@ export default cartRouter;
  *                 type: array
  *                 items:
  *                   type: string
- *               category:
- *                 type: string
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               description:
  *                 type: string
  *               video:
@@ -150,11 +152,12 @@ export default cartRouter;
  *               - name: "String"
  *                 price: number
  *                 stock: number
- *                 discount: number
+ *                 discount: 0
  *                 image: "String"
  *             gallery:
  *               - "String"
- *             category: "Object ID"
+ *             categories:
+ *               - "Object Id"
  *             description: "String"
  *             video: "String"
  *     responses:
@@ -199,7 +202,7 @@ export default cartRouter;
  *             type: object
  *             required:
  *               - name
- *               - category
+ *               - categories
  *               - description
  *               - thumbnail
  *             properties:
@@ -211,8 +214,10 @@ export default cartRouter;
  *                 type: array
  *                 items:
  *                   type: string
- *               category:
- *                 type: string
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: string
  *               description:
  *                 type: string
  *               video:
@@ -222,7 +227,8 @@ export default cartRouter;
  *             thumbnail: "String"
  *             gallery:
  *               - "String"
- *             category: "Object ID"
+ *             categories:
+ *               - "Object Id"
  *             description: "String"
  *             video: "String"
  *     responses:
