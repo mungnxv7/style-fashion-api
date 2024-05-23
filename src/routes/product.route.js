@@ -30,41 +30,67 @@ export default cartRouter;
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Attribute:
- *       type: object
- *       properties:
- *         color:
+ * /products:
+ *   get:
+ *     summary: Get all product
+ *     description: Only admins can retrieve all product.
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
  *           type: string
- *         size:
+ *         description: sort by query in the form of field:desc/asc (ex. name:asc)
+ *       - in: query
+ *         name: sortBy
+ *         schema:
  *           type: string
- *         price:
- *           type: number
- *         stock:
- *           type: number
- *         discount:
- *           type: number
- *         image:
- *           type: string
- *
- *     Products:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *         thumbnail:
- *           type: string
- *         gallery:
- *           type: number
- *         attributes:
- *           type: number
- *         category:
- *           type: number
- *         description:
- *           type: string
- *         video:
- *           type: string
+ *         description: sort by query in the form of field:desc/asc (ex. name:asc)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of users
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       '200':
+ *         description: The list of the user
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /products/{identifier}:
+ *   get:
+ *     summary: Get details of a specific product
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: identifier
+ *         required: true
+ *         description: The id or slug of the product
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
  *
  * /products:
  *   post:
@@ -81,11 +107,10 @@ export default cartRouter;
  *             required:
  *               - name
  *               - thumbnail
- *               - attributes
- *               - categories
+ *               - category
  *               - description
- *               - color
- *               - size
+ *               - attributes
+ *               - name
  *               - price
  *               - stock
  *             properties:
@@ -96,12 +121,23 @@ export default cartRouter;
  *               attributes:
  *                 type: array
  *                 items:
- *                   $ref: '#/components/schemas/Attribute'
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     price:
+ *                       type: integer
+ *                     stock:
+ *                       type: integer
+ *                     discount:
+ *                       type: integer
+ *                     image:
+ *                       type: string
  *               gallery:
  *                 type: array
  *                 items:
  *                   type: string
- *               categories:
+ *               category:
  *                 type: string
  *               description:
  *                 type: string
@@ -111,22 +147,14 @@ export default cartRouter;
  *             name: "String"
  *             thumbnail: "String"
  *             attributes:
- *               - color: "String"
- *                 size: "String"
- *                 price: number
- *                 stock: number
- *                 discount: number
- *                 image: "String"
- *               - color: "String"
- *                 size: "String"
+ *               - name: "String"
  *                 price: number
  *                 stock: number
  *                 discount: number
  *                 image: "String"
  *             gallery:
  *               - "String"
- *               - "String"
- *             categories: "Object ID"
+ *             category: "Object ID"
  *             description: "String"
  *             video: "String"
  *     responses:
@@ -148,4 +176,80 @@ export default cartRouter;
  *           application/json:
  *             example:
  *               message: "Invalid request"
+ */
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   put:
+ *     summary: Update a product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The slug of the product to be updated
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - category
+ *               - description
+ *               - thumbnail
+ *             properties:
+ *               name:
+ *                 type: string
+ *               thumbnail:
+ *                 type: string
+ *               gallery:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               category:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               video:
+ *                 type: string
+ *           example:
+ *             name: "String"
+ *             thumbnail: "String"
+ *             gallery:
+ *               - "String"
+ *             category: "Object ID"
+ *             description: "String"
+ *             video: "String"
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   delete:
+ *     summary: Delete a product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the product to be deleted
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
  */

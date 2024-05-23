@@ -4,7 +4,6 @@ import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
 
 const getAllProducts = async (filter, options) => {
-  console.log(filter, options);
   const products = await Products.paginate(filter, options);
   console.log(products);
   return products;
@@ -13,19 +12,20 @@ const getAllProducts = async (filter, options) => {
 const getProductByID = async (idProduct) => {
   const product = await Products.findOne({ _id: idProduct })
     .populate("attributes")
-    .populate("categories");
+    .populate("category");
 
   return product;
 };
 
 const getProductBySlug = async (slugProduct) => {
   const product = await Products.findOne({ slug: slugProduct })
-    .populate("categories")
+    .populate("category")
     .populate("attributes");
   return product;
 };
 
 const createProducts = async (bodyProduct) => {
+  console.log("abc");
   if (await Products.isSlugTaken(bodyProduct.slug)) {
     throw new ApiError(httpStatus.NOT_FOUND, "Products already exists");
   }
@@ -68,7 +68,7 @@ const updateProducts = async (idProduct, bodyProduct) => {
 const deleteProductById = async (categoryId) => {
   const product = await getProductByID(categoryId);
   if (!product) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Category not found");
+    throw new ApiError(httpStatus.NOT_FOUND, "Product not found");
   }
   await Products.findByIdAndUpdate(product.id, { active: false });
   return product;

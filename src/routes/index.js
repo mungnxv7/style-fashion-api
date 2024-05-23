@@ -33,7 +33,6 @@ export default routes;
  *         name: Thời trang
  *         slug: thoi-trang
  *
- *
  *     User:
  *       type: object
  *       properties:
@@ -121,12 +120,63 @@ export default routes;
  *         district: Nam Từ Liêm
  *         cityProvince: Hà Nội
  *
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
+ *     securitySchemes:
+ *       bearerAuth:
+ *         type: http
+ *         scheme: bearer
+ *         bearerFormat: JWT
  *
+ *     Product:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         thumbnail:
+ *           type: string
+ *         attirbutes:
+ *           type: array
+ *           items:
+ *              $ref: '#/components/schemas/Attribute'
+ *         category:
+ *           type: string
+ *         description:
+ *           type: string
+ *         gallery:
+ *           type: string
+ *         video:
+ *           type: string
+ *       example:
+ *         id: 5ebac534954b54139806c112
+ *         name: Áo dài
+ *         slug: ao-dai
+ *         thumbnail: https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg
+ *         attirbutes: [name:"Đỏ - XL", price:299000, stock:99,discont:0,image:https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg]
  *
+ *     Attribute:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         price:
+ *           type: number
+ *         stock:
+ *           type: number
+ *         discount:
+ *           type: number
+ *         image:
+ *           type: string
+ *       example:
+ *         id: 5ebac534954b54139806c112
+ *         name: Đỏ - XL
+ *         price: 299000
+ *          stock:99
+ *          discont:0
+ *          image:https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg
  *
  */

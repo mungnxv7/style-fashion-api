@@ -30,7 +30,7 @@ class ProductController {
       }
 
       if (!product) {
-        throw new ApiError(httpStatus.NOT_FOUND, "Categories not found");
+        throw new ApiError(httpStatus.NOT_FOUND, "Product not found");
       }
       res.send(product);
     } catch (err) {
@@ -42,6 +42,7 @@ class ProductController {
   }
   async create(req, res) {
     try {
+      console.log("123");
       const data = { ...req.body };
       data.slug = slugify(data.name, { lower: true });
       const result = await productService.createProducts(data);
