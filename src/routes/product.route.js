@@ -91,7 +91,6 @@ export default cartRouter;
 
 /**
  * @swagger
- *
  * /products:
  *   post:
  *     summary: Create a new product
