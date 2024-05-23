@@ -19,7 +19,7 @@ const app = express();
 // Middleware để chuyển hướng
 app.use((req, res, next) => {
   if (req.url === "/") {
-    return res.redirect("https://style-fashion-api.vercel.app/v1/docs/");
+    return res.redirect("https://style-fashion-api.vercel.app/v1/docs");
   }
   next();
 });
