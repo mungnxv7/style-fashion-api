@@ -120,12 +120,6 @@ export default routes;
  *         district: Nam Từ Liêm
  *         cityProvince: Hà Nội
  *
- *     securitySchemes:
- *       bearerAuth:
- *         type: http
- *         scheme: bearer
- *         bearerFormat: JWT
- *
  *     Product:
  *       type: object
  *       properties:
@@ -179,4 +173,9 @@ export default routes;
  *          discont:0
  *          image:https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg
  *
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  */

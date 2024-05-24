@@ -2,6 +2,7 @@ import { Router } from "express";
 import validate from "../middlewares/validate.js";
 import authValidation from "../validations/auth.validation.js";
 import authController from "../controllers/auth.controller.js";
+import { auth } from "../middlewares/auth.js";
 const routerAuth = Router();
 routerAuth.post(
   "/register",
@@ -31,6 +32,7 @@ routerAuth.post(
 );
 routerAuth.post(
   "/send-verification-email",
+  auth(),
   authController.sendVerificationEmail
 );
 routerAuth.post(
