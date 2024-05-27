@@ -173,9 +173,35 @@ export default routes;
  *          discont:0
  *          image:https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg
  *
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
+ *     securitySchemes:
+ *       bearerAuth:
+ *         type: http
+ *         scheme: bearer
+ *         bearerFormat: JWT
+ *
+ *     Cart:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         user:
+ *           type: string
+ *         products_cart:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               product:
+ *                 $ref: '#/components/schemas/Product'
+ *               quantity:
+ *                 type: number
+ *               attribute:
+ *                 $ref: '#/components/schemas/Attribute'
+ *       example:
+ *         id: 66515cbd3fad211cb0c90946
+ *         user: 66497d8f4f4928b722bc2832
+ *          products_cart:[{id:664b7e060974b7124167bbb6,name:"Áo trẻ em",gallery:["https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg"],attribute:["664f5defc3bf8f919eabae7f"],categories:["6651510420d6d5fd691a6823"],description:"Vải pique mịn, nhẹ Được làm từ hỗn hợp cotton...",video:"gdgfdg",active:true}]
+ *         quantity: 2
+ *          attribute:{id:664f5defc3bf8f919eabae7f,name:"Đỏ - L",price:299000, stock:99,discount:0,image:"https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg"}
+ *
  */

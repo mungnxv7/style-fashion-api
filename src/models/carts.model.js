@@ -3,7 +3,7 @@ import { paginate } from "./plugins/paninate.plugin.js";
 
 const cartSchema = new mongoose.Schema(
   {
-    user_ID: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       unique: true,
@@ -12,7 +12,7 @@ const cartSchema = new mongoose.Schema(
     products_cart: {
       type: [
         {
-          products_ID: {
+          product: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Products",
             required: true,
@@ -22,9 +22,9 @@ const cartSchema = new mongoose.Schema(
             required: [true, "Quantity cannot be blank"],
             min: [1, "The quantity must be greater than 0"],
           },
-          variable: {
+          attribute: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Variables",
+            ref: "Attribute",
             required: true,
           },
         },
