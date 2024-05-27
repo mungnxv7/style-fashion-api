@@ -1,9 +1,9 @@
 import { Router } from "express";
-import imagesController from "../controllers/image.controller.js";
 import multer from "multer";
 import path from "path";
+import videosController from "../controllers/video.controller.js";
 
-const routerImages = Router();
+const routerVideos = Router();
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(
@@ -19,27 +19,27 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
 });
-routerImages.post("/", upload.array("images"), imagesController.upload);
-routerImages.delete(
+routerVideos.post("/", upload.array("videos"), videosController.upload);
+routerVideos.delete(
   "/:publicId",
   //   upload.array("images"),∂
-  imagesController.remove
+  videosController.remove
 );
-export default routerImages;
+export default routerVideos;
 
 /**
  * @swagger
  * tags:
- *   name: Images
- *   description: API operations related to image
+ *   name: Videos
+ *   description: API operations related to video
  */
 
 /**
  * @swagger
- * /images:
+ * /videos:
  *   post:
- *     summary: Upload images
- *     tags: [Images]
+ *     summary: Upload videos
+ *     tags: [Videos]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -49,8 +49,8 @@ export default routerImages;
  *           schema:
  *             type: object
  *             properties:
- *               images:
- *                 type: array
+ *               videos:
+ *                 type: file
  *                 items:
  *                   type: string
  *                   format: binary
@@ -64,7 +64,7 @@ export default routerImages;
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Images uploaded successfully
+ *                   example: Videos uploaded successfully
  *       '400':
  *         description: Bad request
  *         content:
@@ -79,15 +79,15 @@ export default routerImages;
 
 /**
  * @swagger
- * /images/{publicId}:
+ * /videos/{publicId}:
  *   delete:
- *     summary: Delete image by public ID
- *     tags: [Images]
+ *     summary: Delete video by public ID
+ *     tags: [Videos]
  *     parameters:
  *       - in: path
  *         name: publicId
  *         required: true
- *         description: Public ID of the image to delete
+ *         description: Public ID of the video to delete
  *         schema:
  *           type: string
  *     responses:
@@ -100,9 +100,9 @@ export default routerImages;
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Image deleted successfully
+ *                   example: video deleted successfully
  *       '404':
- *         description: Image not found
+ *         description: Video not found
  *         content:
  *           application/json:
  *             schema:
@@ -110,5 +110,5 @@ export default routerImages;
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Image not found
+ *                   example: Video not found
  */
