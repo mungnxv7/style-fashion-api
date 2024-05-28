@@ -1,15 +1,11 @@
 import httpStatus from "http-status";
 
-import {
-  addToCartByIdUser,
-  deleteProductCart,
-  getCartsById,
-} from "../services/cart.service.js";
+import cartService from "../services/cart.service.js";
 
 class CategoriesController {
   async getCart(req, res) {
     try {
-      const cart = await getCartsById(req.params.userId);
+      const cart = await cartService.getCartsByIdUser(req.params.userId);
       res.status(httpStatus.CREATED).send(cart);
     } catch (err) {
       res.status(500).json({
@@ -21,7 +17,10 @@ class CategoriesController {
 
   async addToCart(req, res) {
     try {
-      const cart = await addToCartByIdUser(req.params.userId, req.body);
+      const cart = await cartService.addToCartByIdUser(
+        req.params.userId,
+        req.body
+      );
       res.status(httpStatus.CREATED).send(cart);
     } catch (err) {
       res.status(500).json({
@@ -31,9 +30,11 @@ class CategoriesController {
     }
   }
 
-  async deleteCart(req, res) {
+  async remove(req, res) {
     try {
-      await deleteProductCart(req.params.userId, req.params.productCartId);
+      const userID = req.params.userId;
+      const productCartId = req.body.productCartId;
+      await cartService.deleteProductCartById(userID, productCartId);
       res.status(httpStatus.CREATED).send("Cart deleted successfully");
     } catch (err) {
       res.status(500).json({
