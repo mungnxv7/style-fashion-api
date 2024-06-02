@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import toJSON from "./plugins/toJSON.plugin.js";
 
 const attributeSchema = new mongoose.Schema(
   {
@@ -11,6 +12,7 @@ const attributeSchema = new mongoose.Schema(
   { collection: "Attribute", timestamps: true, versionKey: false }
 );
 
+attributeSchema.plugin(toJSON);
 const Attributes = mongoose.model("Attribute", attributeSchema);
 
 export default Attributes;

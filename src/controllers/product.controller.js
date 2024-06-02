@@ -10,8 +10,20 @@ class ProductController {
     try {
       const filter = pickFilter(req.query, ["search"]);
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
+      options.populate = "attributes,categories";
       const result = await productService.getAllProducts(filter, options);
-      res.json(result);
+      const sanitizedResults = result.results.map((product) => {
+        product.active = undefined;
+        if (product.categories) {
+          product.categories = product.categories.map((category) => {
+            category.active = undefined;
+            return category;
+          });
+        }
+        return product; // Trả về sản phẩm đã chỉnh sửa
+      });
+
+      res.json(sanitizedResults);
     } catch (err) {
       res.status(500).json({
         name: err.name,

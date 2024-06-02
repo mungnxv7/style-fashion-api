@@ -5,22 +5,24 @@ import httpStatus from "http-status";
 
 const getAllProducts = async (filter, options) => {
   const products = await Products.paginate(filter, options);
-  console.log(products);
+  // console.log(products);
   return products;
 };
 
 const getProductByID = async (idProduct) => {
   const product = await Products.findOne({ _id: idProduct })
     .populate("attributes")
-    .populate("categories");
+    .populate({ path: "categories", select: "-active" })
+    .select("-active");
 
   return product;
 };
 
 const getProductBySlug = async (slugProduct) => {
   const product = await Products.findOne({ slug: slugProduct })
-    .populate("categories")
-    .populate("attributes");
+    .populate("attributes")
+    .populate({ path: "categories", select: "-active" })
+    .select("-active");
   return product;
 };
 
