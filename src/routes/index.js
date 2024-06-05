@@ -268,9 +268,9 @@ export default routes;
  *         active:
  *           type: boolean
  *       example:
- *         user: "user123"
+ *         user: "66497d8f4f4928b722bc2832"
  *         products_order:
- *           - product_id: "prod002"
+ *           - product_id: "66515cbd3fad211cb0c90946"
  *             product_name: "Product 2"
  *             slug: "product-2"
  *             image_product: "https://example.com/images/product2.jpg"
