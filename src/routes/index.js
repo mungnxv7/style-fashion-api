@@ -7,6 +7,7 @@ import cartRouter from "./cart.router.js";
 import productRouter from "./product.route.js";
 import routerVideos from "./video.route.js";
 import routerComment from "./comment.route.js";
+import orderRouter from "./order.route.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
@@ -17,6 +18,7 @@ routes.use("/videos", routerVideos);
 routes.use("/carts", cartRouter);
 routes.use("/products", productRouter);
 routes.use("/comments", routerComment);
+routes.use("/orders", orderRouter);
 export default routes;
 
 /**
@@ -173,9 +175,9 @@ export default routes;
  *         id: 5ebac534954b54139806c112
  *         name: Đỏ - XL
  *         price: 299000
- *          stock:99
- *          discont:0
- *          image:https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg
+ *         stock: 99
+ *         discont: 0
+ *         image: https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg
  *
  *     securitySchemes:
  *       bearerAuth:
@@ -208,4 +210,87 @@ export default routes;
  *         quantity: 2
  *          attribute:{id:664f5defc3bf8f919eabae7f,name:"Đỏ - L",price:299000, stock:99,discount:0,image:"https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg"}
  *
+ *     Orders:
+ *       type: object
+ *       properties:
+ *         user:
+ *           type: string
+ *         products_order:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               product_id:
+ *                 type: string
+ *               product_name:
+ *                 type: string
+ *               slug:
+ *                 type: string
+ *               image_product:
+ *                 type: string
+ *               image_atrribute:
+ *                 type: string
+ *               quantity:
+ *                 type: number
+ *               price:
+ *                 type: number
+ *               attribute:
+ *                 type: string
+ *         shippingAddress:
+ *           type: object
+ *           properties:
+ *             recipientName:
+ *               type: string
+ *             recipientPhoneNumber:
+ *               type: string
+ *             streetAddress:
+ *               type: string
+ *             wardCommune:
+ *               type: string
+ *             district:
+ *               type: string
+ *             cityProvince:
+ *               type: string
+ *         note:
+ *           type: string
+ *         status:
+ *           type: string
+ *         total_price:
+ *           type: number
+ *         payment_method:
+ *           type: string
+ *         voucher:
+ *           type: string
+ *         payment_id:
+ *           type: string
+ *         order_code:
+ *           type: string
+ *         active:
+ *           type: boolean
+ *       example:
+ *         user: "66497d8f4f4928b722bc2832"
+ *         products_order:
+ *           - product_id: "66515cbd3fad211cb0c90946"
+ *             product_name: "Product 2"
+ *             slug: "product-2"
+ *             image_product: "https://example.com/images/product2.jpg"
+ *             image_atrribute: "https://example.com/images/attribute2.jpg"
+ *             quantity: 1
+ *             price: 50.0
+ *             attribute: "Red - M"
+ *         shippingAddress:
+ *           recipientName: "John Doe"
+ *           recipientPhoneNumber: "123456789"
+ *           streetAddress: "123 Main St"
+ *           wardCommune: "Ward 1"
+ *           district: "District 1"
+ *           cityProvince: "City A"
+ *         note: "Please deliver between 9 AM and 5 PM"
+ *         status: "Pending"
+ *         total_price: 250.0
+ *         payment_method: "Credit Card"
+ *         voucher: "DISCOUNT10"
+ *         payment_id: "pay_001"
+ *         order_code: "#123456"
+ *         active: true
  */
