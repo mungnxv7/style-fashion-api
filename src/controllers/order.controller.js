@@ -1,5 +1,4 @@
 import httpStatus from "http-status";
-<<<<<<< HEAD
 import randomatic from "randomatic";
 import orderService from "../services/order.service.js";
 import userService from "../services/user.service.js";
@@ -87,22 +86,6 @@ class orderController {
     order.status = body.status;
     await orderService.updateOrder(orderID, body);
     res.status(httpStatus.CREATED).json(order);
-=======
-import orderService from "../services/order.service.js";
-import userService from "../services/user.service.js";
-import ApiError from "../utils/ApiError.js";
-
-class orderController {
-  async create(req, res) {
-    const userId = req.params.userID;
-    const body = req.body;
-    const user = await userService.getUserById(userId);
-    console.log(user);
-    if (!user) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-    }
-    // const order = await orderService.createOrder(userId, body);
->>>>>>> 5ed4def (remove active field in response)
   }
 }
 

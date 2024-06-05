@@ -1,6 +1,5 @@
 import orderController from "../controllers/order.controller.js";
 import express from "express";
-<<<<<<< HEAD
 import validate from "../middlewares/validate.js";
 import { createOrder } from "../validations/order.validation.js";
 const orderRouter = express.Router();
@@ -224,10 +223,3 @@ export default orderRouter;
  *           application/json:
  *             example: {}
  */
-=======
-const orderRouter = express.Router();
-
-orderRouter.post("/:userID", orderController.create);
-
-export default orderRouter;
->>>>>>> 5ed4def (remove active field in response)
