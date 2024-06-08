@@ -53,6 +53,28 @@ const productsSchema = new mongoose.Schema(
   { collection: "Products", timestamps: true, versionKey: false }
 );
 
+productsSchema.virtual('min_price').get(function() {
+  if (this.attributes && this.attributes.length > 0) {
+      const minPrice = Math.min(...this.attributes.map(attr => attr.discount || attr.price)); // Sử dụng giá discount nếu có, nếu không thì sử dụng giá price
+      return minPrice;
+  } else {
+      return 0;
+  }
+});
+
+productsSchema.virtual('max_price').get(function() {
+  if (this.attributes && this.attributes.length > 0) {
+      const maxPrice = Math.max(...this.attributes.map(attr => attr.discount || attr.price)); // Sử dụng giá discount nếu có, nếu không thì sử dụng giá price
+      return maxPrice;
+  } else {
+      return 0;
+  }
+});
+
+// Đảm bảo virtuals được bao gồm khi chuyển đổi sang JSON hoặc Object
+productsSchema.set('toJSON', { virtuals: true });
+productsSchema.set('toObject', { virtuals: true });
+
 productsSchema.statics.isSlugTaken = async function (
   productSlug,
   excludeproductId

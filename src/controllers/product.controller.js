@@ -72,7 +72,7 @@ class ProductController {
       const data = { ...req.body };
       data.slug = slugify(data.name, { lower: true });
       const result = await productService.updateProducts(id, data);
-      res.status()
+      res.status(httpStatus.CREATED).json(result)
     } catch (err) {
       res.status(500).json({
         name: err.name,

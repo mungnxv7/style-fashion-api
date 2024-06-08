@@ -17,7 +17,7 @@ cartRouter.get(
   productController.getDetail
 );
 cartRouter.post("/", validate(createProduct), productController.create);
-cartRouter.put("/:id",productController.update);
+cartRouter.put("/:id",validate(updateProduct),productController.update);
 cartRouter.delete("/:id", validate(deleteProduct), productController.remove);
 export default cartRouter;
 
@@ -202,6 +202,7 @@ export default cartRouter;
  *             required:
  *               - name
  *               - categories
+ *               - attributes
  *               - description
  *               - thumbnail
  *             properties:
@@ -217,6 +218,21 @@ export default cartRouter;
  *                 type: array
  *                 items:
  *                   type: string
+ *               attributes:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     price:
+ *                       type: integer
+ *                     stock:
+ *                       type: integer
+ *                     discount:
+ *                       type: integer
+ *                     image:
+ *                       type: string
  *               description:
  *                 type: string
  *               video:
