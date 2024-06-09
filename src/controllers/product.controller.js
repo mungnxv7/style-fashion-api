@@ -8,7 +8,7 @@ import httpStatus from "http-status";
 class ProductController {
   async getAll(req, res) {
     try {
-      const filter = pickFilter(req.query, ["search"]);
+      const filter = pickFilter(req.query, ["search","categories"]);
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
       options.populate = "attributes,categories";
       const result = await productService.getAllProducts(filter, options);

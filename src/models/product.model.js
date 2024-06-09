@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
 import toJSON from "./plugins/toJSON.plugin.js";
 
+
 const productsSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -46,6 +47,9 @@ const productsSchema = new mongoose.Schema(
         message: "No more than 20 attributes are allowed",
       },
     },
+    numReviews: { type: Number, default: 0 },
+    scoreReview: { type: Number, default: 0 },
+    finalScoreReview: { type: Number, default: 0 },
     description: { type: String, required: true },
     video: { type: String, required: false },
     active: { type: Boolean, default: true },
@@ -53,27 +57,31 @@ const productsSchema = new mongoose.Schema(
   { collection: "Products", timestamps: true, versionKey: false }
 );
 
-productsSchema.virtual('min_price').get(function() {
+productsSchema.virtual("min_price").get(function () {
   if (this.attributes && this.attributes.length > 0) {
-      const minPrice = Math.min(...this.attributes.map(attr => attr.discount || attr.price)); // Sử dụng giá discount nếu có, nếu không thì sử dụng giá price
-      return minPrice;
+    const minPrice = Math.min(
+      ...this.attributes.map((attr) => attr.discount || attr.price)
+    ); // Sử dụng giá discount nếu có, nếu không thì sử dụng giá price
+    return minPrice;
   } else {
-      return 0;
+    return 0;
   }
 });
 
-productsSchema.virtual('max_price').get(function() {
+productsSchema.virtual("max_price").get(function () {
   if (this.attributes && this.attributes.length > 0) {
-      const maxPrice = Math.max(...this.attributes.map(attr => attr.discount || attr.price)); // Sử dụng giá discount nếu có, nếu không thì sử dụng giá price
-      return maxPrice;
+    const maxPrice = Math.max(
+      ...this.attributes.map((attr) => attr.discount || attr.price)
+    ); // Sử dụng giá discount nếu có, nếu không thì sử dụng giá price
+    return maxPrice;
   } else {
-      return 0;
+    return 0;
   }
 });
 
 // Đảm bảo virtuals được bao gồm khi chuyển đổi sang JSON hoặc Object
-productsSchema.set('toJSON', { virtuals: true });
-productsSchema.set('toObject', { virtuals: true });
+productsSchema.set("toJSON", { virtuals: true });
+productsSchema.set("toObject", { virtuals: true });
 
 productsSchema.statics.isSlugTaken = async function (
   productSlug,

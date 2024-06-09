@@ -3,6 +3,7 @@ import { objectId } from "./custom.validation.js";
 
 export const getProducts = {
   query: Joi.object().keys({
+    categories:Joi.string(),
     search: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
