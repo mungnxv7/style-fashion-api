@@ -44,6 +44,11 @@ export default cartRouter;
  *           type: string
  *         description: sort by query in the form of field:desc/asc (ex. name:asc)
  *       - in: query
+ *         name: categories
+ *         schema:
+ *           type: string
+ *         description: find products by categoies
+ *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
