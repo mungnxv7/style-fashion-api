@@ -8,10 +8,22 @@ import httpStatus from "http-status";
 class ProductController {
   async getAll(req, res) {
     try {
-      const filter = pickFilter(req.query, ["search"]);
+      const filter = pickFilter(req.query, ["search","categories"]);
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
+      options.populate = "attributes,categories";
       const result = await productService.getAllProducts(filter, options);
-      res.json(result);
+      const sanitizedResults = result.results.map((product) => {
+        product.active = undefined;
+        if (product.categories) {
+          product.categories = product.categories.map((category) => {
+            category.active = undefined;
+            return category;
+          });
+        }
+        return product; // Trả về sản phẩm đã chỉnh sửa
+      });
+
+      res.json(sanitizedResults);
     } catch (err) {
       res.status(500).json({
         name: err.name,
@@ -60,7 +72,7 @@ class ProductController {
       const data = { ...req.body };
       data.slug = slugify(data.name, { lower: true });
       const result = await productService.updateProducts(id, data);
-      res.status(httpStatus.CREATED).send(result);
+      res.status(httpStatus.CREATED).json(result)
     } catch (err) {
       res.status(500).json({
         name: err.name,
