@@ -1,49 +1,47 @@
 import { Router } from "express";
-import usersController from "../controllers/user.controller.js";
 import validate from "../middlewares/validate.js";
+import reviewCotroller from "../controllers/review.controller.js";
 import {
-  createUser,
-  deleteUser,
-  getUser,
-  getUsers,
-  updateUser,
-} from "../validations/user.validation.js";
+  createReview,
+  deleteReview,
+  getReview,
+  getReviews,
+  updateReview,
+} from "../validations/review.validation.js";
 
-const routerUser = Router();
-routerUser.get("/", validate(getUsers), usersController.getAll);
-routerUser.get("/:id", validate(getUser), usersController.getDetail);
-routerUser.post("/", validate(createUser), usersController.create);
-routerUser.put("/:id", validate(updateUser), usersController.update);
-routerUser.delete("/:id", validate(deleteUser), usersController.remove);
-export default routerUser;
+const routerReview = Router();
+routerReview.get("/", validate(getReviews), reviewCotroller.getAll);
+routerReview.get("/:id", validate(getReview), reviewCotroller.getDetail);
+routerReview.post("/", validate(createReview), reviewCotroller.create);
+routerReview.put("/:id", validate(updateReview), reviewCotroller.update);
+routerReview.delete("/:id", validate(deleteReview), reviewCotroller.remove);
+export default routerReview;
 
 /**
  * @swagger
  * tags:
- *   name: Users
+ *   name: Review
  *   description: API operations related to user
  */
 
 /**
  * @swagger
- * /users:
+ * /reviews:
  *   get:
  *     summary: Get all users
  *     description: Only admins can retrieve all users.
- *     tags: [Users]
+ *     tags: [Review]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: name
- *         schema:
- *           type: string
- *         description: User name
+ *         name: productId
+ *         description: The id of the
  *       - in: query
- *         name: role
+ *         name: content
  *         schema:
  *           type: string
- *         description: User role
+ *         description: Content
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -55,7 +53,7 @@ export default routerUser;
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of users
+ *         description: Maximum number of reviews
  *       - in: query
  *         name: page
  *         schema:
@@ -73,10 +71,10 @@ export default routerUser;
 
 /**
  * @swagger
- * /users/{id}:
+ * /reviews/{id}:
  *   get:
  *     summary: Get details of a specific users
- *     tags: [Users]
+ *     tags: [Review]
  *     parameters:
  *       - in: path
  *         name: id
@@ -92,10 +90,10 @@ export default routerUser;
 
 /**
  * @swagger
- * /users:
+ * /reviews:
  *   post:
  *     summary: Create a new users
- *     tags: [Users]
+ *     tags: [Review]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -143,10 +141,10 @@ export default routerUser;
 
 /**
  * @swagger
- * /users/{id}:
+ * /reviews/{id}:
  *   put:
  *     summary: Update a users
- *     tags: [Users]
+ *     tags: [Review]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -202,7 +200,7 @@ export default routerUser;
  * /users/{id}:
  *   delete:
  *     summary: Delete a users
- *     tags: [Users]
+ *     tags: [Review]
  *     security:
  *       - bearerAuth: []
  *     parameters:

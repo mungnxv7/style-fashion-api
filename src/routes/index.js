@@ -7,6 +7,8 @@ import cartRouter from "./cart.router.js";
 import productRouter from "./product.route.js";
 import routerVideos from "./video.route.js";
 import routerComment from "./comment.route.js";
+import routerAddress from "./address.route.js";
+// import routerReview from "./review.route.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
@@ -17,6 +19,9 @@ routes.use("/videos", routerVideos);
 routes.use("/carts", cartRouter);
 routes.use("/products", productRouter);
 routes.use("/comments", routerComment);
+routes.use("/shipping-address", routerAddress);
+// routes.use("/reviews", routerReview);
+
 export default routes;
 
 /**
