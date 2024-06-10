@@ -17,7 +17,7 @@ cartRouter.get(
   productController.getDetail
 );
 cartRouter.post("/", validate(createProduct), productController.create);
-cartRouter.put("/:id", validate(updateProduct), productController.update);
+cartRouter.put("/:id",validate(updateProduct),productController.update);
 cartRouter.delete("/:id", validate(deleteProduct), productController.remove);
 export default cartRouter;
 
@@ -43,6 +43,11 @@ export default cartRouter;
  *         schema:
  *           type: string
  *         description: sort by query in the form of field:desc/asc (ex. name:asc)
+ *       - in: query
+ *         name: categories
+ *         schema:
+ *           type: string
+ *         description: find products by categoies
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -202,6 +207,7 @@ export default cartRouter;
  *             required:
  *               - name
  *               - categories
+ *               - attributes
  *               - description
  *               - thumbnail
  *             properties:
@@ -217,6 +223,21 @@ export default cartRouter;
  *                 type: array
  *                 items:
  *                   type: string
+ *               attributes:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     price:
+ *                       type: integer
+ *                     stock:
+ *                       type: integer
+ *                     discount:
+ *                       type: integer
+ *                     image:
+ *                       type: string
  *               description:
  *                 type: string
  *               video:

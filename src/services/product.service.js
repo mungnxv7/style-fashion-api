@@ -1,35 +1,36 @@
 import Products from "../models/product.model.js";
-import AttributeModel from "../models/attribute.model.js";
+import Attributes from "../models/attribute.model.js";
 import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
 
 const getAllProducts = async (filter, options) => {
   const products = await Products.paginate(filter, options);
-  console.log(products);
+  // console.log(products);
   return products;
 };
 
 const getProductByID = async (idProduct) => {
   const product = await Products.findOne({ _id: idProduct })
     .populate("attributes")
-    .populate("categories");
+    .populate({ path: "categories", select: "-active" })
+    .select("-active");
 
   return product;
 };
 
 const getProductBySlug = async (slugProduct) => {
   const product = await Products.findOne({ slug: slugProduct })
-    .populate("categories")
-    .populate("attributes");
+    .populate("attributes")
+    .populate({ path: "categories", select: "-active" })
+    .select("-active");
   return product;
 };
 
 const createProducts = async (bodyProduct) => {
-  console.log("abc");
   if (await Products.isSlugTaken(bodyProduct.slug)) {
     throw new ApiError(httpStatus.NOT_FOUND, "Products already exists");
   }
-  const newAttrbutes = await AttributeModel.insertMany(bodyProduct.attributes);
+  const newAttrbutes = await Attributes.insertMany(bodyProduct.attributes);
   if (!newAttrbutes) {
     throw new ApiError(httpStatus.NOT_FOUND, "Attribute create failed");
   }
@@ -47,14 +48,23 @@ const createProducts = async (bodyProduct) => {
 
 const updateProducts = async (idProduct, bodyProduct) => {
   try {
-    // Loại bỏ trường attributes nếu nó tồn tại trong bodyProduct
-    if (bodyProduct.hasOwnProperty("attributes")) {
-      delete bodyProduct.attributes;
+    if (await Products.isSlugTaken(bodyProduct.slug)) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Products already exists");
+    }
+    const product = await Products.findById(idProduct)
+    if(!product){
+      throw new ApiError(httpStatus.NOT_FOUND, "Products not found");
     }
 
+    await Attributes.deleteMany({ _id: { $in: product.attributes } })
+    const newAttrbutes = await Attributes.insertMany(bodyProduct.attributes);
+    console.log("newAttr: ",newAttrbutes);
+    const insertedIds = newAttrbutes.map((doc) => doc._id);
+    console.log(insertedIds);
+    const dataProduct = { ...bodyProduct, attributes: insertedIds };
     const updatedProduct = await Products.findByIdAndUpdate(
       idProduct,
-      { $set: bodyProduct },
+      { $set: dataProduct },
       { new: true, runValidators: true }
     );
 
