@@ -4,26 +4,30 @@ import { pickFilter, pickOption } from "../utils/pick.js";
 import { isValidObjectId } from "mongoose";
 import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
+import {getCatgoryBySlug} from "../services/category.service.js"
 
 class ProductController {
   async getAll(req, res) {
     try {
+      if(req.query.categories){
+        const listCategory = req.query.categories.split(",");
+        req.query.categories = await Promise.all(listCategory.map(async category => {
+          if (isValidObjectId(category)) {
+            return category;
+          }
+          const isCategory = await getCatgoryBySlug(category); 
+          if (!isCategory) {
+            throw new ApiError(httpStatus.NOT_FOUND, "Slug category not found");
+          }
+          return isCategory._id;
+        }));
+      }
       const filter = pickFilter(req.query, ["search","categories"]);
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
       options.populate = "attributes,categories";
       const result = await productService.getAllProducts(filter, options);
-      const sanitizedResults = result.results.map((product) => {
-        product.active = undefined;
-        if (product.categories) {
-          product.categories = product.categories.map((category) => {
-            category.active = undefined;
-            return category;
-          });
-        }
-        return product; // Trả về sản phẩm đã chỉnh sửa
-      });
 
-      res.json(sanitizedResults);
+      res.status(httpStatus.OK).json(result);
     } catch (err) {
       res.status(500).json({
         name: err.name,
@@ -54,7 +58,6 @@ class ProductController {
   }
   async create(req, res) {
     try {
-      console.log("123");
       const data = { ...req.body };
       data.slug = slugify(data.name, { lower: true });
       const result = await productService.createProducts(data);

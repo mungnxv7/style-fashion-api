@@ -16,6 +16,7 @@ const categorySchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: true,
+      private: true,
     },
   },
   { collection: "Categories", timestamps: true, versionKey: false }

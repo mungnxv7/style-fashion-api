@@ -52,7 +52,7 @@ const productsSchema = new mongoose.Schema(
     finalScoreReview: { type: Number, default: 0 },
     description: { type: String, required: true },
     video: { type: String, required: false },
-    active: { type: Boolean, default: true },
+    active: { type: Boolean, default: true,private:true },
   },
   { collection: "Products", timestamps: true, versionKey: false }
 );

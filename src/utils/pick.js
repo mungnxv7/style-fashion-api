@@ -12,7 +12,7 @@ export const pickFilter = (object, keys) => {
   keys.forEach((key) => {
     if (object && Object.prototype.hasOwnProperty.call(object, key)) {
       if(key == "categories"){
-        filters.push({ categories: { $in: [object[key]] } });
+        filters.push({ categories: { $in: object[key]} });
       }
       if (key == "search") {
         filters.push({ name: { $regex: object[key], $options: "i" } });
