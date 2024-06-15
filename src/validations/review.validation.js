@@ -3,11 +3,11 @@ import { password, objectId, phoneNumber } from "./custom.validation.js";
 
 const createReview = {
   body: Joi.object().keys({
+    productId: Joi.string().required().custom(objectId),
+    email: Joi.string().required(),
     name: Joi.string().required(),
-    password: Joi.string().required().custom(password),
-    email: Joi.string().required().email(),
-    phoneNumber: Joi.string().required().custom(phoneNumber),
-    role: Joi.string().required().valid("user", "admin"),
+    score: Joi.number().min(0).max(5).required(),
+    content: Joi.string().required(),
   }),
 };
 
@@ -18,6 +18,12 @@ const getReviews = {
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+  }),
+};
+
+const approveReview = {
+  query: Joi.object().keys({
+    reviewId: Joi.string().required(),
   }),
 };
 
@@ -48,4 +54,11 @@ const deleteReview = {
   }),
 };
 
-export { createReview, getReviews, getReview, updateReview, deleteReview };
+export {
+  createReview,
+  getReviews,
+  getReview,
+  approveReview,
+  updateReview,
+  deleteReview,
+};

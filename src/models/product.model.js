@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
 import toJSON from "./plugins/toJSON.plugin.js";
-
+import { connectPrimaryDB } from "../utils/db.js";
 
 const productsSchema = new mongoose.Schema(
   {
@@ -95,6 +95,6 @@ productsSchema.statics.isSlugTaken = async function (
 };
 productsSchema.plugin(paginate);
 productsSchema.plugin(toJSON);
-const Products = mongoose.model("Products", productsSchema);
+const Products = connectPrimaryDB.model("Products", productsSchema);
 
 export default Products;

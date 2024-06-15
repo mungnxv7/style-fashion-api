@@ -51,14 +51,14 @@ const updateProducts = async (idProduct, bodyProduct) => {
     if (await Products.isSlugTaken(bodyProduct.slug)) {
       throw new ApiError(httpStatus.NOT_FOUND, "Products already exists");
     }
-    const product = await Products.findById(idProduct)
-    if(!product){
+    const product = await Products.findById(idProduct);
+    if (!product) {
       throw new ApiError(httpStatus.NOT_FOUND, "Products not found");
     }
 
-    await Attributes.deleteMany({ _id: { $in: product.attributes } })
+    await Attributes.deleteMany({ _id: { $in: product.attributes } });
     const newAttrbutes = await Attributes.insertMany(bodyProduct.attributes);
-    console.log("newAttr: ",newAttrbutes);
+    console.log("newAttr: ", newAttrbutes);
     const insertedIds = newAttrbutes.map((doc) => doc._id);
     console.log(insertedIds);
     const dataProduct = { ...bodyProduct, attributes: insertedIds };
@@ -83,6 +83,37 @@ const deleteProductById = async (productId) => {
   await Products.findByIdAndUpdate(product.id, { active: false });
   return product;
 };
+
+const updateScoreReviewProduct = async (productId, score, type) => {
+  if (!["update", "delete"].includes(type)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid type specified");
+  }
+  const product = await Products.findById(productId);
+  if (!product) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Product not found");
+  }
+
+  let numReviews = product.numReviews;
+  let scoreReview = product.scoreReview;
+
+  if (type === "update") {
+    numReviews += 1;
+    scoreReview += score;
+  } else if (type === "delete") {
+    numReviews -= 1;
+    scoreReview -= score;
+    if (scoreReview < 0 || numReviews <= 0) {
+      numReviews = 0;
+      scoreReview = 0;
+    }
+  }
+  const finalScoreReview = numReviews === 0 ? 0 : scoreReview / numReviews;
+  product.numReviews = numReviews;
+  product.scoreReview = scoreReview;
+  product.finalScoreReview = finalScoreReview;
+  await product.save();
+  return product;
+};
 const productService = {
   getAllProducts,
   createProducts,
@@ -90,5 +121,6 @@ const productService = {
   getProductByID,
   getProductBySlug,
   deleteProductById,
+  updateScoreReviewProduct,
 };
 export default productService;

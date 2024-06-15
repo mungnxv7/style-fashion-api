@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
 import toJSON from "./plugins/toJSON.plugin.js";
+import { connectPrimaryDB, connectSecondaryDB } from "../utils/db.js";
 
 const categorySchema = new mongoose.Schema(
   {
@@ -35,6 +36,6 @@ categorySchema.statics.isSlugTaken = async function (
 
 categorySchema.plugin(paginate);
 categorySchema.plugin(toJSON);
-const Categories = mongoose.model("Categories", categorySchema);
+const Categories = connectPrimaryDB.model("Categories", categorySchema);
 
 export default Categories;

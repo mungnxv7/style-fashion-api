@@ -4,6 +4,7 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import toJSON from "./plugins/toJSON.plugin.js";
 import { paginate } from "./plugins/paninate.plugin.js";
+import { connectPrimaryDB } from "../utils/db.js";
 
 const addressSchema = new mongoose.Schema(
   {
@@ -145,6 +146,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-const User = mongoose.models.Users || mongoose.model("Users", userSchema);
+const User =
+  connectPrimaryDB.models.Users || connectPrimaryDB.model("Users", userSchema);
 
 export default User;

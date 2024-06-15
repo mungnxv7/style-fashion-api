@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
 import toJSON from "./plugins/toJSON.plugin.js";
+import { connectPrimaryDB } from "../utils/db.js";
 
 const orderSchema = new mongoose.Schema(
   {
@@ -14,9 +15,9 @@ const orderSchema = new mongoose.Schema(
             required: true,
           },
           product_name: { type: String, required: true, trim: true },
-          slug:{ type: String, required: true, trim: true },
-          image_product:{ type: String, required: true, trim: true },
-          image_atrribute:{ type: String,trim: true },
+          slug: { type: String, required: true, trim: true },
+          image_product: { type: String, required: true, trim: true },
+          image_atrribute: { type: String, trim: true },
           quantity: {
             type: Number,
             required: true,
@@ -29,36 +30,36 @@ const orderSchema = new mongoose.Schema(
       ],
     },
     shippingAddress: {
-        recipientName: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        recipientPhoneNumber: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        streetAddress: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        wardCommune: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        district: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        cityProvince: {
-          type: String,
-          required: true,
-          trim: true,
-        },
+      recipientName: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      recipientPhoneNumber: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      streetAddress: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      wardCommune: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      district: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      cityProvince: {
+        type: String,
+        required: true,
+        trim: true,
+      },
     },
     note: { type: String, trim: true },
     status: {
@@ -78,6 +79,6 @@ const orderSchema = new mongoose.Schema(
 );
 orderSchema.plugin(paginate);
 orderSchema.plugin(toJSON);
-const Order = mongoose.model("Orders", orderSchema);
+const Order = connectPrimaryDB.model("Orders", orderSchema);
 
 export default Order;
