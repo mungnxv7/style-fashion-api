@@ -36,6 +36,7 @@ const updateUser = {
       email: Joi.string().email(),
       password: Joi.string().custom(password),
       name: Joi.string(),
+      image: Joi.string(),
       phoneNumber: Joi.string().custom(phoneNumber),
       role: Joi.string().valid("user", "admin"),
     })
