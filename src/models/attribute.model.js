@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import toJSON from "./plugins/toJSON.plugin.js";
+import { connectPrimaryDB } from "../utils/db.js";
 
 const attributeSchema = new mongoose.Schema(
   {
@@ -13,6 +14,6 @@ const attributeSchema = new mongoose.Schema(
 );
 
 attributeSchema.plugin(toJSON);
-const Attributes = mongoose.model("Attribute", attributeSchema);
+const Attributes = connectPrimaryDB.model("Attribute", attributeSchema);
 
 export default Attributes;

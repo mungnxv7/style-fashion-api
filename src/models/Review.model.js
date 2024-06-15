@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
 import toJSON from "./plugins/toJSON.plugin.js";
-const reviewStatus = {
+import { connectPrimaryDB } from "../utils/db.js";
+export const reviewStatus = {
   offline: "offline",
   reviewed: "reviewed",
   deleted: "deleted",
 };
 const reviewSchema = new mongoose.Schema(
   {
-    productsId: {
+    productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Products",
     },
@@ -40,9 +41,11 @@ const reviewSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+reviewSchema.index({ productId: 1 });
 reviewSchema.plugin(paginate);
 reviewSchema.plugin(toJSON);
 
-const Review = mongoose.model("Reviews", reviewSchema);
+const Review = connectPrimaryDB.model("Reviews", reviewSchema);
 
 export default Review;

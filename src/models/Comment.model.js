@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { connectPrimaryDB } from "../utils/db.js";
 
 const commentSchema = new mongoose.Schema(
   {
@@ -24,6 +25,6 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-const Comment = mongoose.model("Comments", commentSchema);
+const Comment = connectPrimaryDB.model("Comments", commentSchema);
 
 export default Comment;

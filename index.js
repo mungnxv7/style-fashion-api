@@ -29,7 +29,7 @@ dotenv.config();
 
 app.use(morgan("dev"));
 app.use(cors({ origin: "*" }));
-connectDB(URI_DB);
+// connectDB(URI_DB);
 
 const options = {
   definition: {

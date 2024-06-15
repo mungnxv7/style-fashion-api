@@ -8,8 +8,11 @@ import productRouter from "./product.route.js";
 import routerVideos from "./video.route.js";
 import routerComment from "./comment.route.js";
 import routerAddress from "./address.route.js";
-// import routerReview from "./review.route.js";
+import routerReview from "./review.route.js";
 import orderRouter from "./order.route.js";
+import routerCity from "./City/city.route.js";
+import routerDistrict from "./City/district.route.js";
+import routerWard from "./City/ward.route.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
@@ -21,7 +24,10 @@ routes.use("/carts", cartRouter);
 routes.use("/products", productRouter);
 routes.use("/comments", routerComment);
 routes.use("/shipping-address", routerAddress);
-// routes.use("/reviews", routerReview);
+routes.use("/reviews", routerReview);
+routes.use("/cities", routerCity);
+routes.use("/districts", routerDistrict);
+routes.use("/wards", routerWard);
 
 routes.use("/orders", orderRouter);
 export default routes;

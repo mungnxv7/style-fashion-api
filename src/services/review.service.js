@@ -1,16 +1,10 @@
 import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js";
-import User from "../models/User.model.js";
-import Review from "../models/Review.model.js";
+import Review, { reviewStatus } from "../models/Review.model.js";
+import productService from "./product.service.js";
 
-const createUser = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Email already taken");
-  }
-  if (await User.isPhoneNumberTaken(userBody.isPhoneNumberTaken)) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Phone number already taken");
-  }
-  return await User.create(userBody);
+const createReview = async (body) => {
+  return await Review.create(body);
 };
 
 const queryReviewByProduct = async (filter, options) => {
@@ -18,55 +12,48 @@ const queryReviewByProduct = async (filter, options) => {
   return reviews;
 };
 
-const getUserById = async (id) => {
-  return User.findById(id);
+// approve
+const approveReview = async (reviewId) => {
+  const review = await getReviewById(reviewId);
+  if (!review) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Review not found");
+  }
+  await productService.updateScoreReviewProduct(
+    review.productId,
+    review.score,
+    "update"
+  );
+  Object.assign(review, { status: reviewStatus.reviewed });
+  await review.save();
+  return review;
 };
 
-const getUserByEmail = async (email) => {
-  return User.findOne({ email });
+const getReviewById = async (id) => {
+  return Review.findById(id);
 };
 
-const getUserByPhoneNumber = async (phoneNumber) => {
-  return User.findOne({ phoneNumber });
-};
-
-const updateUserById = async (userId, updateBody) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+const deleteReviewById = async (reviewId) => {
+  const review = await getReviewById(reviewId);
+  if (!review) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Review not found");
   }
-  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email already taken");
+  if (review.status == reviewStatus.reviewed) {
+    await productService.updateScoreReviewProduct(
+      review.productId,
+      review.score,
+      "delete"
+    );
   }
-  if (
-    updateBody.phoneNumber &&
-    (await User.isPhoneNumberTaken(updateBody.phoneNumber, userId))
-  ) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Phone number already taken");
-  }
-  Object.assign(user, updateBody);
-  await user.save();
-  return user;
-};
-
-const deleteUserById = async (userId) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-  }
-  // await User.findByIdAndUpdate(user.id);
-  await User.findByIdAndUpdate(user.id, { active: false });
-  return user;
+  Object.assign(review, { status: reviewStatus.deleted });
+  await review.save();
+  return review;
 };
 
 const reviewService = {
-  createUser,
+  createReview,
   queryReviewByProduct,
-  getUserById,
-  getUserByEmail,
-  getUserByPhoneNumber,
-  updateUserById,
-  deleteUserById,
+  approveReview,
+  deleteReviewById,
 };
 
 export default reviewService;

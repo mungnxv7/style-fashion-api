@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { tokenTypes } from "../config/tokens.js";
 import toJSON from "./plugins/toJSON.plugin.js";
+import { connectPrimaryDB } from "../utils/db.js";
 
 const tokenSchema = new mongoose.Schema(
   {
@@ -41,6 +42,6 @@ const tokenSchema = new mongoose.Schema(
 
 tokenSchema.plugin(toJSON);
 
-const Token = mongoose.model("Tokens", tokenSchema);
+const Token = connectPrimaryDB.model("Tokens", tokenSchema);
 
 export default Token;

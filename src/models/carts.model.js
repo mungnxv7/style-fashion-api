@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { paginate } from "./plugins/paninate.plugin.js";
+import { connectPrimaryDB } from "../utils/db.js";
 
 const cartSchema = new mongoose.Schema(
   {
@@ -35,6 +36,6 @@ const cartSchema = new mongoose.Schema(
   { collection: "Carts", timestamps: true, versionKey: false }
 );
 
-const Carts = mongoose.model("Carts", cartSchema);
+const Carts = connectPrimaryDB.model("Carts", cartSchema);
 
 export default Carts;
