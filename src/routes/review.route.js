@@ -150,6 +150,7 @@ export default routerReview;
  *               - productId
  *               - email
  *               - name
+ *               - images
  *               - score
  *               - content
  *             properties:
@@ -159,6 +160,12 @@ export default routerReview;
  *                 type: string
  *               name:
  *                 type: string
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               video:
+ *                 type: string
  *               score:
  *                 type: number
  *               content:
@@ -166,7 +173,9 @@ export default routerReview;
  *           example:
  *             productId: "String"
  *             email: "String"
- *             name: "String"
+ *             images:
+ *               - "url"
+ *             video: "String"
  *             score: 0
  *             content: "String"
  *     responses:

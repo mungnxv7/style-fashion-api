@@ -44,6 +44,16 @@ const update = async (req, res) => {
   }
 };
 
+const updateStatus = async (req, res) => {
+  const { userId, addressId } = req.query;
+  try {
+    const address = await addressService.updateStatusAddress(userId, addressId);
+    res.send(address);
+  } catch (err) {
+    errorMessage(res, err);
+  }
+};
+
 const remove = async (req, res) => {
   const { userId, addressId } = req.query;
   try {
@@ -58,6 +68,7 @@ const addressCotroller = {
   getAll,
   create,
   update,
+  updateStatus,
   remove,
 };
 

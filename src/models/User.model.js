@@ -6,43 +6,42 @@ import toJSON from "./plugins/toJSON.plugin.js";
 import { paginate } from "./plugins/paninate.plugin.js";
 import { connectPrimaryDB } from "../utils/db.js";
 
-const addressSchema = new mongoose.Schema(
-  {
-    recipientName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    recipientPhoneNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    streetAddress: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    wardCommune: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    district: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    cityProvince: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-  }
-  // {
-  //   _id: false,
-  // }
-);
+const addressSchema = new mongoose.Schema({
+  recipientName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  recipientPhoneNumber: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  streetAddress: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  wardCommune: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  district: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  cityProvince: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  selected: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const userSchema = new mongoose.Schema(
   {

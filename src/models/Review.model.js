@@ -21,6 +21,14 @@ const reviewSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    images: [
+      {
+        type: String,
+      },
+    ],
+    video: {
+      type: String,
+    },
     score: { type: Number, require: true },
     content: { type: String, maxLength: 255 },
     status: {

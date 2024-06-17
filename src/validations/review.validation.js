@@ -6,6 +6,8 @@ const createReview = {
     productId: Joi.string().required().custom(objectId),
     email: Joi.string().required(),
     name: Joi.string().required(),
+    images: Joi.array().items(Joi.string()).max(5).optional(),
+    video: Joi.string().optional(),
     score: Joi.number().min(0).max(5).required(),
     content: Joi.string().required(),
   }),

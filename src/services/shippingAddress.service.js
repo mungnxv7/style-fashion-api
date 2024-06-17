@@ -7,6 +7,9 @@ const addAddress = async (userId, body) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
+  if (user?.shippingAddress?.length === 0) {
+    body.selected = true;
+  }
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     {
@@ -17,7 +20,7 @@ const addAddress = async (userId, body) => {
     { new: true }
   );
 
-  return updatedUser;
+  return updatedUser?.shippingAddress;
 };
 
 const queryAddressUserId = async (userId) => {
@@ -65,6 +68,26 @@ const updateAddressByUserId = async (userId, addressId, updateBody) => {
   return user.shippingAddress[addressIndex];
 };
 
+const updateStatusAddress = async (userId, addressId) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  const isAddress = user.shippingAddress.find(
+    (address) => address._id.toString() === addressId
+  );
+  if (!isAddress) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Address not found");
+  }
+  const newAddressList = user.shippingAddress.map((item) => {
+    return { ...item, selected: isAddress._id === item._id ? true : false };
+  });
+
+  user.shippingAddress = newAddressList;
+  await user.save();
+  return user.shippingAddress;
+};
+
 const deletAddress = async (userId, addressId) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -88,6 +111,7 @@ const addressService = {
   queryAddressUserId,
   getAddressDetail,
   updateAddressByUserId,
+  updateStatusAddress,
   deletAddress,
 };
 

@@ -14,6 +14,7 @@ import {
   getAddress,
   getAllAddresses,
   updateAddress,
+  updateStatusAddress,
 } from "../validations/address.validation.js";
 import addressCotroller from "../controllers/shippingAddress.controller.js";
 
@@ -21,6 +22,11 @@ const routerAddress = Router();
 routerAddress.get("/", validate(getAddress), addressCotroller.getAll);
 routerAddress.post("/", validate(createAddress), addressCotroller.create);
 routerAddress.put("/", validate(updateAddress), addressCotroller.update);
+routerAddress.post(
+  "/update-status",
+  validate(updateStatusAddress),
+  addressCotroller.updateStatus
+);
 routerAddress.delete("/", validate(deleteAddress), addressCotroller.remove);
 export default routerAddress;
 
@@ -166,6 +172,33 @@ export default routerAddress;
  *             wardCommune: "String"
  *             district: "String"
  *             cityProvince: "String"
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /shipping-address/update-status:
+ *   post:
+ *     summary: Update a address
+ *     tags: [Shipping Address]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         description: User id
+ *       - in: query
+ *         name: addressId
+ *         schema:
+ *           type: string
+ *         description: Address id
  *     responses:
  *       '200':
  *         description: Successful response

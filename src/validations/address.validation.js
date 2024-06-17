@@ -45,6 +45,13 @@ const updateAddress = {
     .min(1),
 };
 
+const updateStatusAddress = {
+  query: Joi.object().keys({
+    userId: Joi.string().custom(objectId).required(),
+    addressId: Joi.string().custom(objectId).required(),
+  }),
+};
+
 const deleteAddress = {
   query: Joi.object().keys({
     userId: Joi.string().custom(objectId).required(),
@@ -57,5 +64,6 @@ export {
   getAllAddresses,
   getAddress,
   updateAddress,
+  updateStatusAddress,
   deleteAddress,
 };
