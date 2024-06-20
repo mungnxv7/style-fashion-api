@@ -13,6 +13,7 @@ import orderRouter from "./order.route.js";
 import routerCity from "./City/city.route.js";
 import routerDistrict from "./City/district.route.js";
 import routerWard from "./City/ward.route.js";
+import routerPayment from "./payment.route.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
@@ -30,6 +31,7 @@ routes.use("/districts", routerDistrict);
 routes.use("/wards", routerWard);
 
 routes.use("/orders", orderRouter);
+routes.use("/payments", routerPayment);
 export default routes;
 
 /**

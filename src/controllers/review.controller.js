@@ -48,6 +48,7 @@ const getDetail = async (req, res) => {
 };
 
 const create = async (req, res) => {
+  console.log(121);
   try {
     const review = await reviewService.createReview(req.body);
     res.status(httpStatus.CREATED).send({ message: "Create successfully!" });
