@@ -1,12 +1,28 @@
 import express from "express";
 import validate from "../middlewares/validate.js";
 import cartController from "../controllers/cart.controller.js";
+import {
+  addToCart,
+  deleteProductCart,
+  getCart,
+} from "../validations/cart.validation.js";
 const cartRouter = express.Router();
 
-cartRouter.get("/:userId", cartController.getCart);
-cartRouter.post("/:userId", cartController.addToCart);
-cartRouter.delete("/:userId/", cartController.remove);
+cartRouter.get("/:userId", validate(getCart), cartController.getCart);
+cartRouter.post("/", validate(addToCart), cartController.addToCart);
+cartRouter.delete(
+  "/:userId/",
+  validate(deleteProductCart),
+  cartController.remove
+);
 export default cartRouter;
+
+/**
+ * @swagger
+ * tags:
+ *   name: Carts
+ *   description: API operations related to cart
+ */
 
 /**
  * @swagger
@@ -32,17 +48,18 @@ export default cartRouter;
 
 /**
  * @swagger
- * /carts/{id}:
+ * /carts:
  *   post:
  *     summary: Update a categories
  *     tags: [Carts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: userId
- *         required: true
- *         description: The id of the carts to be add to cart
+ *         schema:
+ *           type: string
+ *         description: User id
  *     requestBody:
  *       required: true
  *       content:
@@ -50,20 +67,20 @@ export default cartRouter;
  *           schema:
  *             type: object
  *             required:
- *               - product_ID
- *               - attribute_ID
+ *               - product
+ *               - attribute
  *               - quantity
  *             properties:
- *               product_ID:
+ *               product:
  *                 type: string
- *               attribute_ID:
+ *               attribute:
  *                 type: string
  *               quantity:
  *                 type: number
  *           example:
- *             product_ID: "Object ID"
- *             attribute_ID: "Object ID"
- *             quantity: "String"
+ *             product: "Object ID"
+ *             attribute: "Object ID"
+ *             quantity: 0
  *     responses:
  *       '200':
  *         description: Successful response

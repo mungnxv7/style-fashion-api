@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js";
 import Carts from "../models/carts.model.js";
 import Attributes from "../models/attribute.model.js";
+import mongoose from "mongoose";
 
 const getCartsByIdUser = async (user_id) => {
   return await Carts.findOne({ user: user_id });
@@ -20,7 +21,7 @@ const addToCartByIdUser = async (user_ID, cartBody) => {
       item.attribute.toString() === cartBody.attribute
   );
   if (productIndex > -1) {
-    const attribute = await Attributes.findOne(cartBody.attribute);
+    const attribute = await Attributes.findById(cartBody.attribute);
     if (!attribute) {
       console.log("Attribute not found");
       throw new ApiError(httpStatus.BAD_REQUEST, "Attribute not found");

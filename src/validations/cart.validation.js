@@ -2,7 +2,7 @@ import Joi from "joi";
 import { objectId } from "./custom.validation.js";
 
 export const addToCart = {
-  params: Joi.object().keys({
+  query: Joi.object().keys({
     userId: Joi.required().custom(objectId),
   }),
   body: Joi.object().keys({
