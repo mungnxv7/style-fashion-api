@@ -35,6 +35,7 @@ const cartSchema = new mongoose.Schema(
   },
   { collection: "Carts", timestamps: true, versionKey: false }
 );
+cartSchema.index({ user: 1 });
 
 const Carts = connectPrimaryDB.model("Carts", cartSchema);
 

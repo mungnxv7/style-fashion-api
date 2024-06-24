@@ -3,7 +3,6 @@ import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js";
 import Carts from "../models/carts.model.js";
 import Attributes from "../models/attribute.model.js";
-import mongoose from "mongoose";
 
 const getCartsByIdUser = async (user_id) => {
   return await Carts.findOne({ user: user_id }).populate([
@@ -19,11 +18,11 @@ const getCartsByIdUser = async (user_id) => {
   ]);
 };
 
-const addToCartByIdUser = async (user_ID, cartBody) => {
+const addToCartByIdUser = async (userId, cartBody) => {
   let cart = {};
-  cart = await Carts.findOne({ user: user_ID });
+  cart = await Carts.findOne({ user: userId });
   if (!cart) {
-    cart = await Carts.create({ user: user_ID });
+    cart = await Carts.create({ user: userId });
   }
   const productIndex = cart.products_cart.findIndex(
     (item) =>
@@ -52,7 +51,6 @@ const addToCartByIdUser = async (user_ID, cartBody) => {
 };
 
 const deleteProductCartById = async (user_id, product_cart_id) => {
-  console.log(user_id, product_cart_id);
   const cart = await Carts.findOne({ user: user_id });
 
   if (!cart) {
