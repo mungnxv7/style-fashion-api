@@ -88,106 +88,132 @@ export default orderRouter;
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: orderID
+ *         name: userID
  *         required: true
- *         description: The order ID of the order
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - user
- *               - products_order
- *               - shippingAddress
- *               - total_price
- *               - payment_method
  *             properties:
- *               user:
- *                 type: string
- *               products_order:
+ *               productsOrder:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     product:
+ *                     productId:
  *                       type: string
- *                     product_name:
- *                       type: string
- *                     slug:
- *                       type: string
- *                     image_product:
- *                       type: string
- *                     image_attribute:
- *                       type: string
+ *                       example: "string"
  *                     quantity:
  *                       type: integer
+ *                       minimum: 1
+ *                       example: number
  *                     price:
- *                       type: integer
+ *                       type: number
+ *                       minimum: 1
+ *                       example: number
+ *                     productName:
+ *                       type: string
+ *                       example: string
+ *                     slug:
+ *                       type: string
+ *                       example: string
+ *                     imageProduct:
+ *                       type: string
+ *                       example: string
+ *                     imageAtrribute:
+ *                       type: string
+ *                       example: string
  *                     attribute:
  *                       type: string
+ *                       example: string
+ *                 required: true
  *               shippingAddress:
  *                 type: object
  *                 properties:
  *                   recipientName:
  *                     type: string
+ *                     example: string
  *                   recipientPhoneNumber:
  *                     type: string
+ *                     example: string
  *                   streetAddress:
  *                     type: string
+ *                     example: string
  *                   wardCommune:
  *                     type: string
+ *                     example: string
  *                   district:
  *                     type: string
+ *                     example: string
  *                   cityProvince:
  *                     type: string
+ *                     example: string
+ *                 required: true
+ *               historicalCost:
+ *                 type: number
+ *                 example: number
+ *               salePrice:
+ *                 type: number
+ *                 example: number
+ *                 default: 0
+ *               shippingFee:
+ *                 type: number
+ *                 example: number
  *               note:
  *                 type: string
- *               total_price:
- *                 type: integer
- *               payment_method:
+ *                 example: string
+ *                 default: ""
+ *               totalPrice:
+ *                 type: number
+ *                 example: number
+ *               paymentMethod:
  *                 type: string
+ *                 enum: [VNPAY, COD]
+ *                 example: string
+ *               paymentId:
+ *                 type: string
+ *                 example: string
  *               voucher:
  *                 type: string
- *               payment_id:
- *                 type: string
- *           example:
- *             products_order:
- *               - product: "ObjectID"
- *                 products_name: "product1"
- *                 slug: "product1"
- *                 image_product: "String"
- *                 image_attribute: "String"
- *                 price: 1000
- *                 quantity: 1
- *                 attribute: "ObjectID"
- *             shippingAddress:
- *               - "String"
- *             note: "String"
- *             total_price: 10000
- *             payment_method: "String"
- *             voucher: "OBjectID"
- *             payment_id: "String"
+ *                 example: string
+ *             required:
+ *               - productsOrder
+ *               - shippingAddress
+ *               - historicalCost
+ *               - shippingFee
+ *               - totalPrice
+ *               - paymentMethod
  *     responses:
- *       '200':
- *         description: Successfully created product
+ *       200:
+ *         description: Order created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
  *                   type: string
- *                   description: The product ID
- *               example:
- *                   {}
- *       '400':
- *         description: Bad request
+ *                   example: Order created successfully
+ *       400:
+ *         description: Bad Request
  *         content:
  *           application/json:
- *             example:
- *               message: "Invalid request"
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid request parameters
  */
 
 /**
@@ -210,12 +236,13 @@ export default orderRouter;
  *           schema:
  *             type: object
  *             required:
- *               - status
+ *               - paymentStatus
  *             properties:
- *               status:
+ *               paymentStatus:
  *                 type: string
+ *                 enum: [0,1,2,3,4,5,6,7]
  *           example:
- *             status: "chờ xác nhận | chuẩn bị hàng | đang giao hàng | đã giao hàng | thành công | hoàn thành | hủy"
+ *             paymentStatus: number
  *     responses:
  *       '200':
  *         description: Successful response

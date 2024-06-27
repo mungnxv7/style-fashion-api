@@ -1,11 +1,10 @@
 import Products from "../models/product.model.js";
-import Attributes from "../models/attribute.model.js";
 import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
+import attributeService from "./attribute.service.js";
 
 const getAllProducts = async (filter, options) => {
   const products = await Products.paginate(filter, options);
-  // console.log(products);
   return products;
 };
 
@@ -14,7 +13,6 @@ const getProductByID = async (idProduct) => {
     .populate("attributes")
     .populate({ path: "categories", select: "-active" })
     .select("-active");
-
   return product;
 };
 
@@ -30,12 +28,20 @@ const createProducts = async (bodyProduct) => {
   if (await Products.isSlugTaken(bodyProduct.slug)) {
     throw new ApiError(httpStatus.NOT_FOUND, "Products already exists");
   }
-  const newAttrbutes = await Attributes.insertMany(bodyProduct.attributes);
+  const newAttrbutes = await attributeService.createAttributeMany(
+    bodyProduct.attributes
+  ); 
   if (!newAttrbutes) {
     throw new ApiError(httpStatus.NOT_FOUND, "Attribute create failed");
   }
+  bodyProduct.minPrice = Math.min(
+    ...newAttrbutes.map((attr) => attr.discount == 0 ? attr.price: attr.discount)
+  );
+  bodyProduct.maxPrice = Math.max(
+    ...newAttrbutes.map((attr) => attr.discount == 0 ? attr.price: attr.discount)
+  );
   const insertedIds = newAttrbutes.map((doc) => doc._id);
-  const dataProduct = { ...bodyProduct, attributes: insertedIds };
+  const dataProduct = { ...bodyProduct,attributes: insertedIds};
   const newProduct = await Products.create(dataProduct);
   if (!newProduct) {
     throw new ApiError(
@@ -49,18 +55,24 @@ const createProducts = async (bodyProduct) => {
 const updateProducts = async (idProduct, bodyProduct) => {
   try {
     if (await Products.isSlugTaken(bodyProduct.slug)) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Products already exists");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Products already exists");
     }
     const product = await Products.findById(idProduct);
     if (!product) {
       throw new ApiError(httpStatus.NOT_FOUND, "Products not found");
     }
 
-    await Attributes.deleteMany({ _id: { $in: product.attributes } });
-    const newAttrbutes = await Attributes.insertMany(bodyProduct.attributes);
-    console.log("newAttr: ", newAttrbutes);
+    await attributeService.deleteAttributeMany(product.attributes);
+    const newAttrbutes = await attributeService.createAttributeMany(
+      bodyProduct.attributes
+    );
+    bodyProduct.minPrice = Math.min(
+      ...newAttrbutes.map((attr) => attr.discount == 0 ? attr.price: attr.discount)
+    );
+    bodyProduct.maxPrice = Math.max(
+      ...newAttrbutes.map((attr) => attr.discount == 0 ? attr.price: attr.discount)
+    );
     const insertedIds = newAttrbutes.map((doc) => doc._id);
-    console.log(insertedIds);
     const dataProduct = { ...bodyProduct, attributes: insertedIds };
     const updatedProduct = await Products.findByIdAndUpdate(
       idProduct,

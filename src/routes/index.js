@@ -223,32 +223,34 @@ export default routes;
  *         quantity: 2
  *          attribute:{id:664f5defc3bf8f919eabae7f,name:"Đỏ - L",price:299000, stock:99,discount:0,image:"https://pos.nvncdn.com/87a693-52032/ps/20221222_Boj72UOgjLy3DubzkVy1gJW2.jpg"}
  *
+ *
  *     Orders:
  *       type: object
  *       properties:
- *         user:
- *           type: string
- *         products_order:
+ *         productsOrder:
  *           type: array
  *           items:
  *             type: object
  *             properties:
- *               product_id:
+ *               productId:
  *                 type: string
- *               product_name:
+ *               quantity:
+ *                 type: integer
+ *                 minimum: 1
+ *               price:
+ *                 type: number
+ *                 minimum: 1
+ *               productName:
  *                 type: string
  *               slug:
  *                 type: string
- *               image_product:
+ *               imageProduct:
  *                 type: string
- *               image_atrribute:
+ *               imageAtrribute:
  *                 type: string
- *               quantity:
- *                 type: number
- *               price:
- *                 type: number
  *               attribute:
  *                 type: string
+ *           required: true
  *         shippingAddress:
  *           type: object
  *           properties:
@@ -264,30 +266,34 @@ export default routes;
  *               type: string
  *             cityProvince:
  *               type: string
+ *           required: true
+ *         historicalCost:
+ *           type: number
+ *         salePrice:
+ *           type: number
+ *           default: 0
+ *         shippingFee:
+ *           type: number
  *         note:
  *           type: string
- *         status:
- *           type: string
- *         total_price:
+ *           default: ""
+ *         totalPrice:
  *           type: number
- *         payment_method:
+ *         paymentMethod:
+ *           type: string
+ *           enum: [VNPAY, COD]
+ *         paymentId:
  *           type: string
  *         voucher:
  *           type: string
- *         payment_id:
- *           type: string
- *         order_code:
- *           type: string
- *         active:
- *           type: boolean
  *       example:
  *         user: "66497d8f4f4928b722bc2832"
- *         products_order:
- *           - product_id: "66515cbd3fad211cb0c90946"
- *             product_name: "Product 2"
+ *         productsOrder:
+ *           - productId: "66515cbd3fad211cb0c90946"
+ *             productName: "Product 2"
  *             slug: "product-2"
- *             image_product: "https://example.com/images/product2.jpg"
- *             image_atrribute: "https://example.com/images/attribute2.jpg"
+ *             imageProduct: "https://example.com/images/product2.jpg"
+ *             imageAtrribute: "https://example.com/images/attribute2.jpg"
  *             quantity: 1
  *             price: 50.0
  *             attribute: "Red - M"
@@ -298,12 +304,12 @@ export default routes;
  *           wardCommune: "Ward 1"
  *           district: "District 1"
  *           cityProvince: "City A"
+ *         historicalCost: 350
+ *         salePrice: 300
+ *         shippingFee: 50
  *         note: "Please deliver between 9 AM and 5 PM"
- *         status: "Pending"
- *         total_price: 250.0
- *         payment_method: "Credit Card"
- *         voucher: "DISCOUNT10"
- *         payment_id: "pay_001"
- *         order_code: "#123456"
- *         active: true
+ *         totalPrice: 350
+ *         paymentMethod: "VNPAY"
+ *         paymentId: "60d0fe4f5311236168a109cc"
+ *         voucher: "60d0fe4f5311236168a109cd"
  */

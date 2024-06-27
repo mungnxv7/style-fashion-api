@@ -1,9 +1,7 @@
 import httpStatus from "http-status";
-
 import ApiError from "../utils/ApiError.js";
-import Carts from "../models/carts.model.js";
-import Attributes from "../models/attribute.model.js";
-import mongoose from "mongoose";
+import Carts from "../models/Carts.model.js";
+import attributeService from "./attribute.service.js";
 
 const getCartsByIdUser = async (user_id) => {
   return await Carts.findOne({ user: user_id });
@@ -21,14 +19,12 @@ const addToCartByIdUser = async (user_ID, cartBody) => {
       item.attribute.toString() === cartBody.attribute
   );
   if (productIndex > -1) {
-    const attribute = await Attributes.findById(cartBody.attribute);
+    const attribute = await attributeService.getAttributeByID(cartBody.attribute);
     if (!attribute) {
-      console.log("Attribute not found");
       throw new ApiError(httpStatus.BAD_REQUEST, "Attribute not found");
     }
     cart.products_cart[productIndex].quantity += cartBody.quantity;
     if (cart.products_cart[productIndex].quantity > attribute.stock) {
-      console.log("Quantity exceeds stock limit");
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         `Quantity exceeds stock limit. Available stock: ${attribute.stock}`
@@ -42,7 +38,6 @@ const addToCartByIdUser = async (user_ID, cartBody) => {
 };
 
 const deleteProductCartById = async (user_id, product_cart_id) => {
-  console.log(user_id, product_cart_id);
   const cart = await Carts.findOne({ user: user_id });
 
   if (!cart) {

@@ -22,11 +22,10 @@ class ProductController {
           return isCategory._id;
         }));
       }
-      const filter = pickFilter(req.query, ["search","categories"]);
+      const filter = pickFilter(req.query, ["search","categories","gte","lte"]);
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
       options.populate = "attributes,categories";
       const result = await productService.getAllProducts(filter, options);
-
       res.status(httpStatus.OK).json(result);
     } catch (err) {
       res.status(500).json({

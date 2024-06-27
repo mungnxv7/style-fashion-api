@@ -6,16 +6,16 @@ export const createOrder = {
     userID: Joi.string().required().custom(objectId),
   }),
   body: Joi.object().keys({
-    products_order: Joi.array()
+    productsOrder: Joi.array()
       .items(
         Joi.object().keys({
-          product_id: Joi.string().required().custom(objectId),
+          productId: Joi.string().required().custom(objectId),
           quantity: Joi.number().required().min(1),
           price: Joi.number().required().min(1),
-          product_name: Joi.string().required(),
+          productName: Joi.string().required(),
           slug: Joi.string().required(),
-          image_product:Joi.string().required(),
-          image_atrribute: Joi.string().allow(""),
+          imageProduct:Joi.string().required(),
+          imageAtrribute: Joi.string().allow(""),
           attribute: Joi.string().required(),
         })
       )
@@ -30,10 +30,13 @@ export const createOrder = {
         cityProvince: Joi.string().required(),
       })
       .required(),
+    historicalCost:Joi.number().required(),
+    salePrice:Joi.number().default(0),
+    shippingFee:Joi.number().required().default(0),
     note: Joi.string().allow("").default(""),
-    total_price: Joi.number().required(),
-    payment_method: Joi.string().required(),
-    payment_id: Joi.string().required(),
+    totalPrice: Joi.number().required(),
+    paymentMethod: Joi.string().required().valid("VNPAY","COD"),
+    paymentId: Joi.string().allow(""),
     voucher: Joi.string().allow("").custom(objectId),
   }),
 };
@@ -55,12 +58,20 @@ export const getOrderDetail = {
   }),
 };
 
-export const updateOrder = {
-  params: Joi.object().keys({
-    userID: Joi.string().required().custom(objectId),
-  }),
-  body: Joi.object().keys({
-    status: Joi.string().required().valid("chờ xác nhận","chuẩn bị hàng","đang giao hàng","đã giao hàng","thành công","hoàn thành","hủy")
-  }),
-};
+// export const updateOrder = {
+//   params: Joi.object().keys({
+//     userID: Joi.string().required().custom(objectId),
+//   }),
+//   body: Joi.object().keys({
+//     status: Joi.string().required().valid("chờ xác nhận","chuẩn bị hàng","đang giao hàng","đã giao hàng","thành công","hoàn thành","hủy")
+//   }),
+// };
 
+export const updateOrder = {
+    params: Joi.object().keys({
+      userID: Joi.string().required().custom(objectId),
+    }),
+    body: Joi.object().keys({
+      paymentStatus: Joi.number().required().valid(0,1,2,3,4,5,6,7)
+    }),
+  };
