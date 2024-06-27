@@ -4,22 +4,36 @@ import Carts from "../models/Carts.model.js";
 import attributeService from "./attribute.service.js";
 
 const getCartsByIdUser = async (user_id) => {
-  return await Carts.findOne({ user: user_id });
+  return await Carts.findOne({ user: user_id }).populate([
+    {
+      path: "products_cart.product",
+      model: "Products",
+      select: "name slug thumbnail",
+    },
+    {
+      path: "products_cart.attribute",
+      model: "Attribute",
+    },
+  ]);
 };
 
-const addToCartByIdUser = async (user_ID, cartBody) => {
+const addToCartByIdUser = async (userId, cartBody) => {
+  console.log(userId, cartBody);
   let cart = {};
-  cart = await Carts.findOne({ user: user_ID });
+  cart = await Carts.findOne({ user: userId });
   if (!cart) {
-    cart = await Carts.create({ user: user_ID });
+    cart = await Carts.create({ user: userId });
   }
+  console.log(cart);
   const productIndex = cart.products_cart.findIndex(
     (item) =>
       item.product.toString() === cartBody.product &&
       item.attribute.toString() === cartBody.attribute
   );
   if (productIndex > -1) {
-    const attribute = await attributeService.getAttributeByID(cartBody.attribute);
+    const attribute = await attributeService.getAttributeByID(
+      cartBody.attribute
+    );
     if (!attribute) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Attribute not found");
     }

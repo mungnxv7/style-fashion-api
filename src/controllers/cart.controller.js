@@ -15,7 +15,6 @@ class CategoriesController {
 
   async addToCart(req, res) {
     const { userId } = req.query;
-    console.log(req.query);
     try {
       const cart = await cartService.addToCartByIdUser(userId, req.body);
       res.status(httpStatus.CREATED).send(cart);
