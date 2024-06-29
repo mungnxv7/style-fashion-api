@@ -1,4 +1,4 @@
-import Order from "../models/Order.model.js";
+import Order from "../models/order.model.js";
 
 const createOrder = (userID,bodyOrder) => {
   return Order.create({user:userID,...bodyOrder});

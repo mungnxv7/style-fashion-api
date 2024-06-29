@@ -1,4 +1,4 @@
-import Attributes from "../models/Attribute.model.js"
+import Attributes from "../models/attribute.model.js"
 
 
 const getAttributeByID = async (attributeID) =>{
