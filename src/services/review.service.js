@@ -28,6 +28,22 @@ const approveReview = async (reviewId) => {
   return review;
 };
 
+// approve
+const restoreReview = async (reviewId) => {
+  const review = await getReviewById(reviewId);
+  if (!review) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Review not found");
+  }
+  // await productService.updateScoreReviewProduct(
+  //   review.productId,
+  //   review.score,
+  //   "update"
+  // );
+  Object.assign(review, { status: reviewStatus.offline });
+  await review.save();
+  return review;
+};
+
 const getReviewById = async (id) => {
   return Review.findById(id);
 };
@@ -53,6 +69,7 @@ const reviewService = {
   createReview,
   queryReviewByProduct,
   approveReview,
+  restoreReview,
   deleteReviewById,
 };
 

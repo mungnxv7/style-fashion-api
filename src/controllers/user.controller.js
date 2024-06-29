@@ -53,12 +53,22 @@ const remove = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const user = await userService.updateUserById(req.params.id, req.body);
+    res.send(user);
+  } catch (err) {
+    errorMessage(res, err);
+  }
+};
+
 const userCotroller = {
   getAll,
   getDetail,
   create,
   update,
   remove,
+  updateProfile,
 };
 
 export default userCotroller;

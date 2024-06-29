@@ -35,20 +35,7 @@ const getAllAdmin = async (req, res) => {
   }
 };
 
-const getDetail = async (req, res) => {
-  try {
-    const user = await userService.getUserById(req.params.id);
-    if (!user) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-    }
-    res.send(user);
-  } catch (err) {
-    errorMessage(res, err);
-  }
-};
-
 const create = async (req, res) => {
-  console.log(121);
   try {
     const review = await reviewService.createReview(req.body);
     res.status(httpStatus.CREATED).send({ message: "Create successfully!" });
@@ -66,10 +53,10 @@ const approve = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
+const restore = async (req, res) => {
   try {
-    const user = await userService.updateUserById(req.params.id, req.body);
-    res.send(user);
+    const review = await reviewService.restoreReview(req.query.reviewId);
+    res.status(httpStatus.CREATED).send(review);
   } catch (err) {
     errorMessage(res, err);
   }
@@ -87,10 +74,9 @@ const remove = async (req, res) => {
 const reviewCotroller = {
   getAll,
   getAllAdmin,
-  getDetail,
   create,
   approve,
-  update,
+  restore,
   remove,
 };
 

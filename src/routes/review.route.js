@@ -2,17 +2,26 @@ import { Router } from "express";
 import validate from "../middlewares/validate.js";
 import reviewCotroller from "../controllers/review.controller.js";
 import {
-  approveReview,
   createReview,
   deleteReview,
   getReviews,
+  restoreOrApproveReview,
 } from "../validations/review.validation.js";
 
 const routerReview = Router();
 routerReview.get("/", validate(getReviews), reviewCotroller.getAll);
 routerReview.get("/v2", validate(getReviews), reviewCotroller.getAllAdmin);
 routerReview.post("/", validate(createReview), reviewCotroller.create);
-routerReview.post("/approve", validate(approveReview), reviewCotroller.approve);
+routerReview.post(
+  "/approve",
+  validate(restoreOrApproveReview),
+  reviewCotroller.approve
+);
+routerReview.post(
+  "/restore",
+  validate(restoreOrApproveReview),
+  reviewCotroller.restore
+);
 routerReview.delete("/:id", validate(deleteReview), reviewCotroller.remove);
 export default routerReview;
 
@@ -118,6 +127,25 @@ export default routerReview;
  * /reviews/approve:
  *   post:
  *     summary: Approve review
+ *     tags: [Review]
+ *     parameters:
+ *       - in: query
+ *         name: reviewId
+ *         required: true
+ *         description: The id of the review Id
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /reviews/restore:
+ *   post:
+ *     summary: Restore review
  *     tags: [Review]
  *     parameters:
  *       - in: query

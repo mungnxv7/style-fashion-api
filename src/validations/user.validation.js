@@ -43,10 +43,32 @@ const updateUser = {
     .min(1),
 };
 
+const updateUserProfile = {
+  params: Joi.object().keys({
+    id: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      email: Joi.string().email(),
+      password: Joi.string().custom(password),
+      name: Joi.string(),
+      image: Joi.string(),
+      phoneNumber: Joi.string().custom(phoneNumber),
+    })
+    .min(1),
+};
+
 const deleteUser = {
   params: Joi.object().keys({
     id: Joi.string().custom(objectId),
   }),
 };
 
-export { createUser, getUsers, getUser, updateUser, deleteUser };
+export {
+  createUser,
+  getUsers,
+  getUser,
+  updateUser,
+  updateUserProfile,
+  deleteUser,
+};

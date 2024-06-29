@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { password, objectId, phoneNumber } from "./custom.validation.js";
+import { objectId } from "./custom.validation.js";
 
 const createReview = {
   body: Joi.object().keys({
@@ -23,31 +23,10 @@ const getReviews = {
   }),
 };
 
-const approveReview = {
+const restoreOrApproveReview = {
   query: Joi.object().keys({
     reviewId: Joi.string().required(),
   }),
-};
-
-const getReview = {
-  params: Joi.object().keys({
-    id: Joi.string().custom(objectId),
-  }),
-};
-
-const updateReview = {
-  params: Joi.object().keys({
-    id: Joi.required().custom(objectId),
-  }),
-  body: Joi.object()
-    .keys({
-      email: Joi.string().email(),
-      password: Joi.string().custom(password),
-      name: Joi.string(),
-      phoneNumber: Joi.string().custom(phoneNumber),
-      role: Joi.string().valid("user", "admin"),
-    })
-    .min(1),
 };
 
 const deleteReview = {
@@ -56,11 +35,4 @@ const deleteReview = {
   }),
 };
 
-export {
-  createReview,
-  getReviews,
-  getReview,
-  approveReview,
-  updateReview,
-  deleteReview,
-};
+export { createReview, getReviews, restoreOrApproveReview, deleteReview };

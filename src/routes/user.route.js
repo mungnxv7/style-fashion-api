@@ -7,6 +7,7 @@ import {
   getUser,
   getUsers,
   updateUser,
+  updateUserProfile,
 } from "../validations/user.validation.js";
 
 const routerUser = Router();
@@ -14,6 +15,11 @@ routerUser.get("/", validate(getUsers), usersController.getAll);
 routerUser.get("/:id", validate(getUser), usersController.getDetail);
 routerUser.post("/", validate(createUser), usersController.create);
 routerUser.put("/:id", validate(updateUser), usersController.update);
+routerUser.put(
+  "/profile/:id",
+  validate(updateUserProfile),
+  usersController.updateProfile
+);
 routerUser.delete("/:id", validate(deleteUser), usersController.remove);
 export default routerUser;
 
@@ -189,6 +195,58 @@ export default routerUser;
  *             email: "String"
  *             phoneNumber: "String"
  *             role: "String"
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /users/profile/{id}:
+ *   put:
+ *     summary: Update a users profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The slug of the users to be updated profile
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - image
+ *               - password
+ *               - email
+ *               - phoneNumber
+ *             properties:
+ *               name:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               phoneNumber:
+ *                 type: string
+ *           example:
+ *             name: "String"
+ *             image: "String"
+ *             password: "String"
+ *             email: "String"
+ *             phoneNumber: "String"
  *     responses:
  *       '200':
  *         description: Successful response
