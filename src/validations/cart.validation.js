@@ -20,7 +20,7 @@ export const getCart = {
 
 export const deleteProductCart = {
   params: Joi.object().keys({
-    id: Joi.string().custom(objectId),
+    userId: Joi.string().custom(objectId),
   }),
   body: Joi.object().keys({
     productCartId: Joi.string().required().custom(objectId),
