@@ -10,7 +10,6 @@ orderRouter.get("/detail/:orderID", orderController.getDetail);
 orderRouter.put("/:orderID", orderController.update);
 export default orderRouter;
 
-
 /**
  * @swagger
  * tags:
@@ -32,6 +31,11 @@ export default orderRouter;
  *         name: userID
  *         required: true
  *         description: The user ID of the order
+ *       - in: query
+ *         name: order_code
+ *         schema:
+ *           type: string
+ *         description: enter order code without the # symbo
  *       - in: query
  *         name: sortBy
  *         schema:

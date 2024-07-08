@@ -11,11 +11,14 @@ export const pickFilter = (object, keys) => {
   let filters = [];
   keys.forEach((key) => {
     if (object && Object.prototype.hasOwnProperty.call(object, key)) {
-      if(key == "categories"){
-        filters.push({ categories: { $in: object[key]} });
+      if (key == "categories") {
+        filters.push({ categories: { $in: object[key] } });
       }
       if (key == "search") {
         filters.push({ name: { $regex: object[key], $options: "i" } });
+      }
+      if (key == "order_code") {
+        filters.push({ orderCode: { $regex: object[key], $options: "i" } });
       }
     }
   });

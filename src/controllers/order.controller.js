@@ -34,7 +34,7 @@ class orderController {
   async getAll(req, res) {
     try {
       const { userID } = req.params;
-      const filter = pickFilter(req.query, ["search"]);
+      const filter = { ...pickFilter(req.query, ["order_code"]), user: userID };
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
       const user = await userService.getUserById(userID);
       if (!user) {
