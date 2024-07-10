@@ -4,7 +4,7 @@ const createOrder = (userID,bodyOrder) => {
   return Order.create({user:userID,...bodyOrder});
 };
 
-const getAllOrderByUserID = (filter, options) => {
+const getOrders = (filter, options) => {
   return Order.paginate(filter, options);
 };
 
@@ -15,9 +15,10 @@ const getOrderByID = (orderID) => {
 const updateOrder = (orderID, bodyOrder) => {
   return Order.findByIdAndUpdate(orderID, bodyOrder);
 };
+
 const orderService = {
   createOrder,
-  getAllOrderByUserID,
+  getOrders,
   getOrderByID,
   updateOrder,
 };

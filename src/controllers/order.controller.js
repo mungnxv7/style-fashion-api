@@ -6,6 +6,7 @@ import ApiError from "../utils/ApiError.js";
 import { pickFilter, pickOption } from "../utils/pick.js";
 import errorMessage from "../config/error.js";
 import { paymentStatusValue } from "../constants/constant.js";
+import { mapOrderStatuses } from "../utils/orderUtils.js";
 
 class orderController {
   async create(req, res) {
@@ -31,22 +32,30 @@ class orderController {
     }
   }
 
-  async getAll(req, res) {
+  async getOrderByUserID(req, res) {
     try {
       const { userID } = req.params;
-      const filter = { ...pickFilter(req.query, ["order_code"]), user: userID };
+      const filter = { ...pickFilter(req.query, ["orderCode"]), user: userID };
       const options = pickOption(req.query, ["sortBy", "limit", "page"]);
       const user = await userService.getUserById(userID);
       if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
       }
-      const orders = await orderService.getAllOrderByUserID(filter, options);
-      orders.results = orders.results.map((order) => {
-        const status = paymentStatusValue.find(
-          (status) => status.code === order.paymentStatus
-        );
-        return { ...order._doc, paymentStatus: status };
-      });
+      const orders = await orderService.getOrders(filter, options);
+      orders.results = mapOrderStatuses(orders.results)
+      res.status(httpStatus.OK).json(orders);
+    } catch (error) {
+      errorMessage(res, error);
+    }
+  }
+
+  async getAll(req, res) {
+    try {
+      const filter = pickFilter(req.query,["orderCode"])
+      const options = pickOption(req.query, ["sortBy", "limit", "page"]);
+      const orders = await orderService.getOrders(filter, options);
+      console.log("order All: ",orders);
+      orders.results = mapOrderStatuses(orders.results)
       res.status(httpStatus.OK).json(orders);
     } catch (error) {
       errorMessage(res, error);
@@ -87,6 +96,7 @@ class orderController {
           "Đơn hàng đang trong trạng thái hủy không thay đổi trạng thái đơn hàng"
         );
       }
+
       if (order.paymentStatus === 6) {
         throw new ApiError(
           httpStatus.BAD_REQUEST,
@@ -95,14 +105,20 @@ class orderController {
       }
 
       if (
-        body.paymentStatus < order.paymentStatus ||
-        body.paymentStatus > order.paymentStatus + 1
+        (body.paymentStatus !== 7 && order.paymentStatus <= 2) ||
+        order.paymentStatus > 2
       ) {
-        throw new ApiError(
-          httpStatus.BAD_REQUEST,
-          "Không thể chuyển về trạng thái trước và trạng thái phải được thay đổi theo thứ tự"
-        );
+        if (
+          body.paymentStatus < order.paymentStatus ||
+          body.paymentStatus > order.paymentStatus + 1
+        ) {
+          throw new ApiError(
+            httpStatus.BAD_REQUEST,
+            "Không thể chuyển về trạng thái trước và trạng thái phải được thay đổi theo thứ tự"
+          );
+        }
       }
+
       order.paymentStatus = body.paymentStatus;
       await orderService.updateOrder(orderID, body);
       res.status(httpStatus.CREATED).json(order);

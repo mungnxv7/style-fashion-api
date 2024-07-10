@@ -41,11 +41,21 @@ export const createOrder = {
   }),
 };
 
-export const getOrders = {
+export const getOrdersByUser = {
   params: Joi.object().keys({
     userID: Joi.string().required().custom(objectId),
   }),
   query: Joi.object().keys({
+    orderCode:Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
+export const getOrders = {
+  query: Joi.object().keys({
+    orderCode:Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -68,9 +78,6 @@ export const getOrderDetail = {
 // };
 
 export const updateOrder = {
-    params: Joi.object().keys({
-      userID: Joi.string().required().custom(objectId),
-    }),
     body: Joi.object().keys({
       paymentStatus: Joi.number().required().valid(0,1,2,3,4,5,6,7)
     }),

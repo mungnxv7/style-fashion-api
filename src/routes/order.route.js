@@ -1,13 +1,14 @@
 import orderController from "../controllers/order.controller.js";
 import express from "express";
 import validate from "../middlewares/validate.js";
-import { createOrder } from "../validations/order.validation.js";
+import { createOrder, getOrderDetail, getOrders, getOrdersByUser, updateOrder } from "../validations/order.validation.js";
 const orderRouter = express.Router();
 
 orderRouter.post("/:userID", validate(createOrder), orderController.create);
-orderRouter.get("/user/:userID", orderController.getAll);
-orderRouter.get("/detail/:orderID", orderController.getDetail);
-orderRouter.put("/:orderID", orderController.update);
+orderRouter.get("/", validate(getOrders), orderController.getAll);
+orderRouter.get("/user/:userID", validate(getOrdersByUser),  orderController.getOrderByUserID);
+orderRouter.get("/detail/:orderID", validate(getOrderDetail),  orderController.getDetail);
+orderRouter.put("/:orderID", validate(updateOrder),  orderController.update);
 export default orderRouter;
 
 /**
@@ -15,6 +16,48 @@ export default orderRouter;
  * tags:
  *   name: Orders
  *   description: API operations related to Orders
+ */
+
+/**
+ * @swagger
+ * /orders:
+ *   get:
+ *     summary: Get all orders
+ *     description: Only admins can retrieve all orders
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: orderCode
+ *         schema:
+ *           type: string
+ *         description: enter order code without the # symbo
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: sort by query in the form of field:desc/asc (ex. name:asc)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of users
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       '200':
+ *         description: The list of the user
+ *         content:
+ *           application/json:
+ *             example: {}
  */
 
 /**
@@ -32,7 +75,7 @@ export default orderRouter;
  *         required: true
  *         description: The user ID of the order
  *       - in: query
- *         name: order_code
+ *         name: orderCode
  *         schema:
  *           type: string
  *         description: enter order code without the # symbo
@@ -232,7 +275,7 @@ export default orderRouter;
  *       - in: path
  *         name: orderID
  *         required: true
- *         description: The orderID to be updated
+ *         description: The order ID of the order
  *     requestBody:
  *       required: true
  *       content:

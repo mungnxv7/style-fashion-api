@@ -17,7 +17,7 @@ export const pickFilter = (object, keys) => {
       if (key == "search") {
         filters.push({ name: { $regex: object[key], $options: "i" } });
       }
-      if (key == "order_code") {
+      if (key == "orderCode") {
         filters.push({ orderCode: { $regex: object[key], $options: "i" } });
       }
     }
