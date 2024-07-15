@@ -1,44 +1,33 @@
 import httpStatus from "http-status";
+
 import ApiError from "../utils/ApiError.js";
 import Carts from "../models/carts.model.js";
-import attributeService from "./attribute.service.js";
+import Attributes from "../models/attribute.model.js";
 
 const getCartsByIdUser = async (user_id) => {
-  return await Carts.findOne({ user: user_id }).populate([
-    {
-      path: "products_cart.product",
-      model: "Products",
-      select: "name slug thumbnail",
-    },
-    {
-      path: "products_cart.attribute",
-      model: "Attribute",
-    },
-  ]);
+  return await Carts.findOne({ user: user_id });
 };
 
-const addToCartByIdUser = async (userId, cartBody) => {
-  console.log(userId, cartBody);
+const addToCartByIdUser = async (user_ID, cartBody) => {
   let cart = {};
-  cart = await Carts.findOne({ user: userId });
+  cart = await Carts.findOne({ user: user_ID });
   if (!cart) {
-    cart = await Carts.create({ user: userId });
+    cart = await Carts.create({ user: user_ID });
   }
-  console.log(cart);
   const productIndex = cart.products_cart.findIndex(
     (item) =>
       item.product.toString() === cartBody.product &&
       item.attribute.toString() === cartBody.attribute
   );
   if (productIndex > -1) {
-    const attribute = await attributeService.getAttributeByID(
-      cartBody.attribute
-    );
+    const attribute = await Attributes.findOne(cartBody.attribute);
     if (!attribute) {
+      console.log("Attribute not found");
       throw new ApiError(httpStatus.BAD_REQUEST, "Attribute not found");
     }
     cart.products_cart[productIndex].quantity += cartBody.quantity;
     if (cart.products_cart[productIndex].quantity > attribute.stock) {
+      console.log("Quantity exceeds stock limit");
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         `Quantity exceeds stock limit. Available stock: ${attribute.stock}`
@@ -51,7 +40,15 @@ const addToCartByIdUser = async (userId, cartBody) => {
   return cart;
 };
 
+const updateCartByIdProductCart = async (userId, data) => {
+  const cart = await Carts.findOneAndUpdate({ user: userId }, data, {
+    new: true,
+  })
+  return cart;
+};
+
 const deleteProductCartById = async (user_id, product_cart_id) => {
+  console.log(user_id, product_cart_id);
   const cart = await Carts.findOne({ user: user_id });
 
   if (!cart) {
@@ -71,6 +68,7 @@ const deleteProductCartById = async (user_id, product_cart_id) => {
 const cartService = {
   getCartsByIdUser,
   addToCartByIdUser,
+  updateCartByIdProductCart,
   deleteProductCartById,
 };
 export default cartService;

@@ -12,14 +12,24 @@ export const addToCart = {
   }),
 };
 
+export const updateProductCart = {
+  query: Joi.object().keys({
+    userId: Joi.required().custom(objectId),
+    cartItemId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object().keys({
+    quantity: Joi.number().min(1).required(),
+  }),
+};
+
 export const getCart = {
-  params: Joi.object().keys({
+  query: Joi.object().keys({
     userId: Joi.required().custom(objectId),
   }),
 };
 
 export const deleteProductCart = {
-  params: Joi.object().keys({
+  query: Joi.object().keys({
     userId: Joi.string().custom(objectId),
   }),
   body: Joi.object().keys({

@@ -5,28 +5,19 @@ import {
   addToCart,
   deleteProductCart,
   getCart,
+  updateProductCart,
 } from "../validations/cart.validation.js";
 const cartRouter = express.Router();
 
-cartRouter.get("/:userId", validate(getCart), cartController.getCart);
+cartRouter.get("/", validate(getCart), cartController.getCart);
 cartRouter.post("/", validate(addToCart), cartController.addToCart);
-cartRouter.delete(
-  "/:userId/",
-  validate(deleteProductCart),
-  cartController.remove
-);
+cartRouter.put("/", validate(updateProductCart), cartController.updateCart);
+cartRouter.delete("/", validate(deleteProductCart), cartController.remove);
 export default cartRouter;
 
 /**
  * @swagger
- * tags:
- *   name: Carts
- *   description: API operations related to cart
- */
-
-/**
- * @swagger
- * /carts/{userId}:
+ * /carts:
  *   get:
  *     summary: Get cart by user id
  *     description: Only admins can retrieve all carts.
@@ -34,7 +25,7 @@ export default cartRouter;
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: userId
  *         required: true
  *         description: user ID
@@ -57,9 +48,8 @@ export default cartRouter;
  *     parameters:
  *       - in: query
  *         name: userId
- *         schema:
- *           type: string
- *         description: User id
+ *         required: true
+ *         description: The id of the carts to be add to cart
  *     requestBody:
  *       required: true
  *       content:
@@ -80,6 +70,44 @@ export default cartRouter;
  *           example:
  *             product: "Object ID"
  *             attribute: "Object ID"
+ *             quantity: "String"
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /carts:
+ *   put:
+ *     summary: Update a categories
+ *     tags: [Carts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         description: The id of the carts to be add to cart
+ *       - in: query
+ *         name: cartItemId
+ *         required: true
+ *         description: The id of the carts to be add to cart
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - quantity
+ *             properties:
+ *               quantity:
+ *                 type: number
+ *           example:
  *             quantity: 0
  *     responses:
  *       '200':
@@ -91,14 +119,14 @@ export default cartRouter;
 
 /**
  * @swagger
- * /carts/{id}:
+ * /carts:
  *   delete:
  *     summary: Update a categories
  *     tags: [Carts]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: userId
  *         required: true
  *         description: The id of the carts to be add to cart
