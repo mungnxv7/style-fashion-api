@@ -82,6 +82,7 @@ const orderSchema = new mongoose.Schema(
 );
 orderSchema.plugin(paginate);
 orderSchema.plugin(toJSON);
+
 const Order = connectPrimaryDB.model("Orders", orderSchema);
 
 export default Order;
