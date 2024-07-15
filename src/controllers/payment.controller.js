@@ -5,6 +5,7 @@ import request from "request";
 import dotenv from "dotenv";
 import qs from "qs";
 import crypTo from "crypto";
+import orderService from "../services/order.service.js";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ const createPaymentUrl = async (req, res) => {
     let vnpUrl = process.env.vnp_Url;
     let returnUrl = process.env.vnp_ReturnUrl;
     let orderId = moment(date).format("DDHHmmss");
+    let orderCode = req.body.orderCode;
     // let amount = 200000;
     let amount = req.body.amount;
     let bankCode = "";
@@ -56,8 +58,8 @@ const createPaymentUrl = async (req, res) => {
     vnp_Params["vnp_TmnCode"] = tmnCode;
     vnp_Params["vnp_Locale"] = locale;
     vnp_Params["vnp_CurrCode"] = currCode;
-    vnp_Params["vnp_TxnRef"] = orderId;
-    vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
+    vnp_Params["vnp_TxnRef"] = orderCode;
+    vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderCode;
     vnp_Params["vnp_OrderType"] = "other";
     vnp_Params["vnp_Amount"] = amount * 100;
     vnp_Params["vnp_ReturnUrl"] = returnUrl;
@@ -87,6 +89,7 @@ const vnpayIpn = async (req, res) => {
     let secureHash = vnp_Params["vnp_SecureHash"];
 
     let orderId = vnp_Params["vnp_TxnRef"];
+    let amount = vnp_Params["vnp_Amount"];
     let rspCode = vnp_Params["vnp_ResponseCode"];
 
     delete vnp_Params["vnp_SecureHash"];
@@ -103,23 +106,26 @@ const vnpayIpn = async (req, res) => {
     //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
     //let paymentStatus = '2'; // Giả sử '2' là trạng thái thất bại bạn cập nhật sau IPN được gọi và trả kết quả về nó
 
-    let checkOrderId = true; // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
+    let checkOrder = await orderService.getOrderByID(orderId); // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
+
     let checkAmount = true; // Kiểm tra số tiền "giá trị của vnp_Amout/100" trùng khớp với số tiền của đơn hàng trong CSDL của bạn
     if (secureHash === signed) {
       //kiểm tra checksum
-      if (checkOrderId) {
-        if (checkAmount) {
-          if (paymentStatus == "0") {
+      if (checkOrder) {
+        if (amount / 100 == checkOrder?.totalPrice) {
+          if (checkOrder?.orderStatus == 0) {
             //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
             if (rspCode == "00") {
               //thanh cong
               //paymentStatus = '1'
               // Ở đây cập nhật trạng thái giao dịch thanh toán thành công vào CSDL của bạn
-              res.status(200).json({ RspCode: "000", Message: "Success" });
+              await orderService.updateOrder(orderId, { orderStatus: 1 });
+              res.status(200).json({ RspCode: "00", Message: "Success" });
             } else {
               //that bai
               //paymentStatus = '2'
               // Ở đây cập nhật trạng thái giao dịch thanh toán thất bại vào CSDL của bạn
+              await orderService.updateOrder(orderId, { orderStatus: 9 });
               res.status(200).json({ RspCode: "00", Message: "Success" });
             }
           } else {

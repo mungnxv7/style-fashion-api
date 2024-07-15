@@ -2,9 +2,6 @@ import Joi from "joi";
 import { objectId } from "./custom.validation.js";
 
 export const createOrder = {
-  params: Joi.object().keys({
-    userID: Joi.string().required().custom(objectId),
-  }),
   body: Joi.object().keys({
     productsOrder: Joi.array()
       .items(
@@ -14,7 +11,7 @@ export const createOrder = {
           price: Joi.number().required().min(1),
           productName: Joi.string().required(),
           slug: Joi.string().required(),
-          imageProduct:Joi.string().required(),
+          imageProduct: Joi.string().required(),
           imageAtrribute: Joi.string().allow(""),
           attribute: Joi.string().required(),
         })
@@ -30,12 +27,13 @@ export const createOrder = {
         cityProvince: Joi.string().required(),
       })
       .required(),
-    historicalCost:Joi.number().required(),
-    salePrice:Joi.number().default(0),
-    shippingFee:Joi.number().required().default(0),
+    user: Joi.string().required().custom(objectId),
+    historicalCost: Joi.number().required(),
+    salePrice: Joi.number().default(0),
+    shippingFee: Joi.number().required().default(0),
     note: Joi.string().allow("").default(""),
     totalPrice: Joi.number().required(),
-    paymentMethod: Joi.string().required().valid("VNPAY","COD"),
+    paymentMethod: Joi.string().required().valid("VNPAY", "COD"),
     paymentId: Joi.string().allow(""),
     voucher: Joi.string().allow("").custom(objectId),
   }),
@@ -46,7 +44,7 @@ export const getOrdersByUser = {
     userID: Joi.string().required().custom(objectId),
   }),
   query: Joi.object().keys({
-    orderCode:Joi.string(),
+    orderCode: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -55,7 +53,7 @@ export const getOrdersByUser = {
 
 export const getOrders = {
   query: Joi.object().keys({
-    orderCode:Joi.string(),
+    orderCode: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -78,7 +76,7 @@ export const getOrderDetail = {
 // };
 
 export const updateOrder = {
-    body: Joi.object().keys({
-      paymentStatus: Joi.number().required().valid(0,1,2,3,4,5,6,7)
-    }),
-  };
+  body: Joi.object().keys({
+    paymentStatus: Joi.number().required().valid(0, 1, 2, 3, 4, 5, 6, 7),
+  }),
+};
