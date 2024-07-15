@@ -24,7 +24,7 @@ dotenv.config();
 
 routerPayment.post("/create_payment_url", paymentCotroller.createPaymentUrl);
 
-routerPayment.get("/vnpay_return", paymentCotroller.vnpayIpn);
+routerPayment.get("/vnpay_return", paymentCotroller.vnpayReturn);
 
 routerPayment.get("/vnpay_ipn", paymentCotroller.vnpayIpn);
 
