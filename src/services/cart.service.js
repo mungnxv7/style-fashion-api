@@ -5,7 +5,17 @@ import Carts from "../models/carts.model.js";
 import Attributes from "../models/attribute.model.js";
 
 const getCartsByIdUser = async (user_id) => {
-  return await Carts.findOne({ user: user_id });
+  return await Carts.findOne({ user: user_id }).populate([
+    {
+      path: "products_cart.product",
+      model: "Products",
+      select: "name slug thumbnail",
+    },
+    {
+      path: "products_cart.attribute",
+      model: "Attribute",
+    },
+  ]);
 };
 
 const addToCartByIdUser = async (user_ID, cartBody) => {
