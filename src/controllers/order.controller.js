@@ -10,6 +10,7 @@ import { mapOrderStatuses } from "../utils/orderUtils.js";
 import paymentCotroller from "./payment.controller.js";
 import dotenv from "dotenv";
 import axios from "axios";
+import orderStatusService from "../services/orderStatus.service.js";
 dotenv.config();
 
 const create = async (req, res) => {
@@ -109,49 +110,53 @@ const getDetail = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { orderID } = req.params;
-    const body = req.body;
+    const statusCode = req.body.orderStatus;
     const order = await orderService.getOrderByID(orderID);
+
     if (!order) {
       throw new ApiError(httpStatus.NOT_FOUND, "Không tìm thấy đơn hàng");
     }
 
-    if (body.orderStatus < 0 || body.orderStatus > 7) {
+    const orderStatus = await orderStatusService.queryOrderStatus();
+
+    if (orderStatus.find((status) => status.code !== statusCode)) {
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         "Trạng thái đơn hàng không khớp với hệ thống!"
       );
     }
-    if (order.orderStatus === 7) {
+
+    if (order.orderStatus === 10) {
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         "Đơn hàng đang trong trạng thái hủy không thay đổi trạng thái đơn hàng"
       );
     }
 
-    if (order.orderStatus === 6) {
+    if (order.orderStatus === 9) {
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         "Đơn hàng đã hoàn thành không thay đổi trạng thái đơn hàng"
       );
     }
 
-    if (
-      (body.orderStatus !== 7 && order.orderStatus <= 2) ||
-      order.orderStatus > 2
-    ) {
-      if (
-        body.orderStatus < order.orderStatus ||
-        body.orderStatus > order.orderStatus + 1
-      ) {
-        throw new ApiError(
-          httpStatus.BAD_REQUEST,
-          "Không thể chuyển về trạng thái trước và trạng thái phải được thay đổi theo thứ tự"
-        );
-      }
-    }
+    // if (
+    //   (body.orderStatus !== 7 && order.orderStatus <= 2) ||
+    //   order.orderStatus > 2
+    // ) {
+    //   if (
+    //     body.orderStatus < order.orderStatus ||
+    //     body.orderStatus > order.orderStatus + 1
+    //   ) {
+    //     throw new ApiError(
+    //       httpStatus.BAD_REQUEST,
+    //       "Không thể chuyển về trạng thái trước và trạng thái phải được thay đổi theo thứ tự"
+    //     );
+    //   }
+    // }
 
-    order.orderStatus = body.orderStatus;
-    await orderService.updateOrder(orderID, body);
+    order.orderStatus = statusCode;
+    await orderService.updateOrder(orderID, statusCode);
     res.status(httpStatus.CREATED).json(order);
   } catch (error) {
     errorMessage(res, error);

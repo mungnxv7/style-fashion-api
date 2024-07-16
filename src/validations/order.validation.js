@@ -76,7 +76,10 @@ export const getOrderDetail = {
 // };
 
 export const updateOrder = {
+  params: Joi.object().keys({
+    orderID: Joi.string().required().custom(objectId),
+  }),
   body: Joi.object().keys({
-    paymentStatus: Joi.number().required().valid(0, 1, 2, 3, 4, 5, 6, 7),
+    orderStatus: Joi.number().required(),
   }),
 };
