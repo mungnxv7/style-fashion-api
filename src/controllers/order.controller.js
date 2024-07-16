@@ -119,7 +119,7 @@ const update = async (req, res) => {
 
     const orderStatus = await orderStatusService.queryOrderStatus();
 
-    if (orderStatus.find((status) => status.code !== statusCode)) {
+    if (!orderStatus.find((status) => status.code === statusCode)) {
       throw new ApiError(
         httpStatus.BAD_REQUEST,
         "Trạng thái đơn hàng không khớp với hệ thống!"
