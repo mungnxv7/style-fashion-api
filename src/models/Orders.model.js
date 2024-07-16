@@ -62,14 +62,19 @@ const orderSchema = new mongoose.Schema(
       },
     },
     note: { type: String, trim: true },
-    historicalCost:{ type: Number, required: true, trim: true },
-    salePrice:{ type: Number, trim: true},
-    shippingFee:{ type: Number, required: true, trim: true},
+    historicalCost: { type: Number, required: true, trim: true },
+    salePrice: { type: Number, trim: true },
+    shippingFee: { type: Number, required: true, trim: true },
     totalPrice: { type: Number, required: true, trim: true },
-    paymentMethod: { type: String,enum:["VNPAY","COD"], required: true, trim: true },
+    paymentMethod: {
+      type: String,
+      enum: ["VNPAY", "COD"],
+      required: true,
+      trim: true,
+    },
     voucher: { type: mongoose.Types.ObjectId, ref: "Vouchers" },
     paymentId: { type: String, trim: true },
-    paymentStatus: { type: Number, trim: true, default: 1 },
+    orderStatus: { type: Number, trim: true, default: 2 },
     orderCode: { type: String, required: true, trim: true },
     active: { type: Boolean, default: true },
   },
@@ -77,6 +82,7 @@ const orderSchema = new mongoose.Schema(
 );
 orderSchema.plugin(paginate);
 orderSchema.plugin(toJSON);
+
 const Order = connectPrimaryDB.model("Orders", orderSchema);
 
 export default Order;
