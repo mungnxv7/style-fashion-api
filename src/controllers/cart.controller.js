@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import cartService from "../services/cart.service.js";
 import Carts from "../models/carts.model.js";
+import errorMessage from "../config/error.js";
 
 const CartController = {
   async getCart(req, res) {
@@ -8,10 +9,8 @@ const CartController = {
       const cart = await cartService.getCartsByIdUser(req.query.userId);
       res.status(httpStatus.OK).send(cart);
     } catch (err) {
-      res.status(500).json({
-        name: err.name,
-        message: err.message,
-      });
+      console.log(err);
+      errorMessage(res, err);
     }
   },
 
@@ -21,12 +20,10 @@ const CartController = {
         req.query.userId,
         req.body
       );
-      res.status(httpStatus.CREATED).send(cart);
+      const newCart = await cartService.getCartsByIdUser(req.query.userId);
+      res.status(httpStatus.CREATED).send(newCart);
     } catch (err) {
-      res.status(500).json({
-        name: err.name,
-        message: err.message,
-      });
+      errorMessage(res, err);
     }
   },
 
@@ -57,10 +54,7 @@ const CartController = {
       });
       res.status(httpStatus.CREATED).send(cartUpdate);
     } catch (err) {
-      res.status(500).json({
-        name: err.name,
-        message: err.message,
-      });
+      errorMessage(res, err);
     }
   },
 
@@ -76,7 +70,7 @@ const CartController = {
         message: err.message,
       });
     }
-  }
-}
+  },
+};
 
 export default CartController;
