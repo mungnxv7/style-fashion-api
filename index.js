@@ -16,6 +16,8 @@ const CSS_URL =
 
 const app = express();
 
+// test
+
 // Middleware để chuyển hướng
 app.use((req, res, next) => {
   if (req.url === "/") {
