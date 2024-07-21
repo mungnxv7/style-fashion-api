@@ -18,6 +18,7 @@ const app = express();
 
 // test
 // todo
+// mung loli
 
 // Middleware để chuyển hướng
 app.use((req, res, next) => {
