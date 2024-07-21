@@ -47,6 +47,8 @@ const voucherSchema = new Schema(
   }
 );
 
+voucherSchema.index({ code: 1 }, { unique: true });
+
 voucherSchema.plugin(paginate);
 voucherSchema.plugin(toJSON);
 
