@@ -1,10 +1,14 @@
 import { Router } from "express";
 import validate from "../middlewares/validate.js";
 import voucherCotroller from "../controllers/voucher.controller.js";
-import { createVoucher } from "../validations/voucher.validation.js";
+import {
+  createVoucher,
+  getVouchers,
+} from "../validations/voucher.validation.js";
 
 const routerVoucher = Router();
 routerVoucher.post("/", validate(createVoucher), voucherCotroller.create);
+routerVoucher.get("/", validate(getVouchers), voucherCotroller.getAll);
 
 export default routerVoucher;
 
@@ -13,6 +17,23 @@ export default routerVoucher;
  * tags:
  *   name: Vouchers
  *   description: API operations related to voucher
+ */
+
+/**
+ * @swagger
+ * /vouchers:
+ *   get:
+ *     summary: Get all vouchers
+ *     description: Only admins can retrieve all vouchers.
+ *     tags: [Vouchers]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: The list of the voucher
+ *         content:
+ *           application/json:
+ *             example: {}
  */
 
 /**

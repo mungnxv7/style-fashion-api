@@ -32,8 +32,14 @@ const create = async (body) => {
   return await Voucher.create(body);
 };
 
+const queryVouchers = async (filter, options) => {
+  const data = await Voucher.paginate(filter, options);
+  return data;
+};
+
 const voucherService = {
   create,
+  queryVouchers,
 };
 
 export default voucherService;

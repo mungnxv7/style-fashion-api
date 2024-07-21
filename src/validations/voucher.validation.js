@@ -14,4 +14,10 @@ const createVoucher = {
     active: Joi.boolean(),
   }),
 };
-export { createVoucher };
+
+const getVouchers = {
+  query: Joi.object().keys({
+    name: Joi.string(),
+  }),
+};
+export { createVoucher, getVouchers };
