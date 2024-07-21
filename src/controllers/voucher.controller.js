@@ -10,7 +10,6 @@ const create = async (req, res) => {
     errorMessage(res, err);
   }
 };
-x;
 
 const voucherCotroller = {
   create,
