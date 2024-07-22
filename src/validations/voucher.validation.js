@@ -8,10 +8,18 @@ const createVoucher = {
       "date.greater": "validTo must be greater than validFrom",
     }),
     discount: Joi.number().required(),
+    minCartPrice: Joi.number().required(),
     quantity: Joi.number().required(),
     type: Joi.string().valid("percentage", "amount").required(),
     exclude_promotions: Joi.boolean().required(),
     active: Joi.boolean(),
+  }),
+};
+
+const checkVoucher = {
+  body: Joi.object().keys({
+    code: Joi.string().required().trim(),
+    cartPrice: Joi.number().required(),
   }),
 };
 
@@ -20,4 +28,4 @@ const getVouchers = {
     name: Joi.string(),
   }),
 };
-export { createVoucher, getVouchers };
+export { createVoucher, getVouchers, checkVoucher };

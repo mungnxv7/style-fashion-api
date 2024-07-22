@@ -26,6 +26,10 @@ const voucherSchema = new Schema(
       type: Number,
       required: true,
     },
+    minCartPrice: {
+      type: Number,
+      required: true,
+    },
     quantity: {
       type: Number,
       required: true,
