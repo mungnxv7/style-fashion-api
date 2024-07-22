@@ -48,9 +48,9 @@ const useVoucher = async (req, res) => {
   try {
     const voucher = await voucherService.checkVoucher(code, cartPrice);
     const newData = await voucherService.updateVoucherById(voucher.id, {
-      quantity: voucher.voucher - 1,
+      quantity: voucher.quantity - 1,
     });
-    return newData;
+    res.send(newData);
   } catch (err) {
     errorMessage(res, err);
   }

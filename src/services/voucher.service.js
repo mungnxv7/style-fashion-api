@@ -78,7 +78,6 @@ const checkVoucher = async (code, cartPrice) => {
       `Minimum cart price to use this voucher is ${voucher.minCartPrice}`
     );
   }
-
   return voucher;
 };
 
@@ -86,6 +85,7 @@ const voucherService = {
   create,
   queryVouchers,
   getVoucherByCode,
+  getVoucherById,
   updateVoucherById,
   checkVoucher,
 };
