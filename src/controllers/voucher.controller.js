@@ -26,26 +26,7 @@ const create = async (req, res) => {
 const checkVoucher = async (req, res) => {
   const { code, cartPrice } = req.body;
   try {
-    const voucher = await voucherService.getVoucherByCode(code);
-    if (!voucher || !voucher.active) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Voucher not found");
-    }
-    const currentDate = new Date();
-    if (currentDate < voucher.validFrom || currentDate > voucher.validTo) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Voucher is not valid at this time"
-      );
-    }
-    if (voucher.quantity <= 0) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Voucher is out of stock");
-    }
-    if (cartPrice < voucher.minCartPrice) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        `Minimum cart price to use this voucher is ${voucher.minCartPrice}`
-      );
-    }
+    const voucher = await voucherService.checkVoucher(code, cartPrice);
     let discountAmount;
     if (voucher.type === "percentage") {
       discountAmount = (cartPrice * voucher.discount) / 100;
@@ -62,9 +43,36 @@ const checkVoucher = async (req, res) => {
   }
 };
 
+const useVoucher = async (req, res) => {
+  const { code, cartPrice } = req.body;
+  try {
+    const voucher = await voucherService.checkVoucher(code, cartPrice);
+    const newData = await voucherService.updateVoucherById(voucher.id, {
+      quantity: voucher.voucher - 1,
+    });
+    return newData;
+  } catch (err) {
+    errorMessage(res, err);
+  }
+};
+
+const update = async (req, res) => {
+  try {
+    const date = await voucherService.updateVoucherById(
+      req.params.id,
+      req.body
+    );
+    res.send(date);
+  } catch (err) {
+    errorMessage(res, err);
+  }
+};
+
 const voucherCotroller = {
   create,
+  useVoucher,
   getAll,
+  update,
   checkVoucher,
 };
 
