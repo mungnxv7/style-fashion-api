@@ -2,6 +2,7 @@ import { Router } from "express";
 import validate from "../middlewares/validate.js";
 import voucherCotroller from "../controllers/voucher.controller.js";
 import {
+  checkVoucher,
   createVoucher,
   getVouchers,
 } from "../validations/voucher.validation.js";
@@ -9,6 +10,11 @@ import {
 const routerVoucher = Router();
 routerVoucher.post("/", validate(createVoucher), voucherCotroller.create);
 routerVoucher.get("/", validate(getVouchers), voucherCotroller.getAll);
+routerVoucher.post(
+  "/check",
+  validate(checkVoucher),
+  voucherCotroller.checkVoucher
+);
 
 export default routerVoucher;
 
@@ -81,6 +87,39 @@ export default routerVoucher;
  *             quantity: 15
  *             type: "amount"
  *             exclude_promotions: false
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /vouchers/check:
+ *   post:
+ *     summary: Check voucher
+ *     tags: [Vouchers]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - code
+ *               - cartPrice
+ *             properties:
+ *               code:
+ *                 type: string
+ *               cartPrice:
+ *                 type: number
+ *           example:
+ *             code: "dsdslk1312"
+ *             cartPrice: 15000
  *     responses:
  *       '200':
  *         description: Successful response
