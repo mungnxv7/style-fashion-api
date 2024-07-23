@@ -68,12 +68,35 @@ const update = async (req, res) => {
   }
 };
 
+const getDetail = async (req, res) => {
+  try {
+    const data = await voucherService.getVoucherById(req.params.id);
+    if (!data) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Voucher not found");
+    }
+    res.send(data);
+  } catch (err) {
+    errorMessage(res, err);
+  }
+};
+
+const remove = async (req, res) => {
+  try {
+    await voucherService.deleteById(req.params.id);
+    res.status(httpStatus.NO_CONTENT).send();
+  } catch (err) {
+    errorMessage(res, err);
+  }
+};
+
 const voucherCotroller = {
   create,
   useVoucher,
   getAll,
   update,
   checkVoucher,
+  getDetail,
+  remove,
 };
 
 export default voucherCotroller;

@@ -4,6 +4,8 @@ import voucherCotroller from "../controllers/voucher.controller.js";
 import {
   checkVoucher,
   createVoucher,
+  deleteVoucher,
+  getVoucher,
   getVouchers,
   updateVoucher,
   useVoucher,
@@ -11,6 +13,7 @@ import {
 
 const routerVoucher = Router();
 routerVoucher.post("/", validate(createVoucher), voucherCotroller.create);
+routerVoucher.get("/:id", validate(getVoucher), voucherCotroller.getDetail);
 routerVoucher.get("/", validate(getVouchers), voucherCotroller.getAll);
 routerVoucher.post(
   "/checkVoucher",
@@ -23,6 +26,7 @@ routerVoucher.post(
   validate(useVoucher),
   voucherCotroller.useVoucher
 );
+routerVoucher.delete("/:id", validate(deleteVoucher), voucherCotroller.remove);
 
 export default routerVoucher;
 
@@ -45,6 +49,25 @@ export default routerVoucher;
  *     responses:
  *       '200':
  *         description: The list of the voucher
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /vouchers/{id}:
+ *   get:
+ *     summary: Get details of a specific voucher
+ *     tags: [Vouchers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The id of the voucher
+ *     responses:
+ *       '200':
+ *         description: Successful response
  *         content:
  *           application/json:
  *             example: {}
@@ -227,6 +250,27 @@ export default routerVoucher;
  *             quantity: 15
  *             type: "amount"
  *             exclude_promotions: false
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
+ * /vouchers/{id}:
+ *   delete:
+ *     summary: Delete a voucher
+ *     tags: [Vouchers]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the voucher to be deleted
  *     responses:
  *       '200':
  *         description: Successful response

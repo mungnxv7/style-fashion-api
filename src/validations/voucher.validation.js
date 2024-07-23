@@ -16,6 +16,12 @@ const createVoucher = {
   }),
 };
 
+const getVoucher = {
+  params: Joi.object().keys({
+    id: Joi.string().custom(objectId),
+  }),
+};
+
 const checkVoucher = {
   body: Joi.object().keys({
     code: Joi.string().required().trim(),
@@ -53,4 +59,19 @@ const updateVoucher = {
     exclude_promotions: Joi.boolean(),
   }),
 };
-export { createVoucher, getVouchers, checkVoucher, useVoucher, updateVoucher };
+
+const deleteVoucher = {
+  params: Joi.object().keys({
+    id: Joi.string().custom(objectId),
+  }),
+};
+
+export {
+  createVoucher,
+  getVouchers,
+  getVoucher,
+  checkVoucher,
+  useVoucher,
+  updateVoucher,
+  deleteVoucher,
+};

@@ -36,7 +36,7 @@ const getVoucherByCode = async (code) => {
   return await Voucher.findOne({ code });
 };
 const getVoucherById = async (id) => {
-  return await Voucher.findById({ id });
+  return await Voucher.findById(id);
 };
 
 const queryVouchers = async (filter, options) => {
@@ -49,11 +49,9 @@ const updateVoucherById = async (id, updateData) => {
     new: true,
     runValidators: true,
   });
-
   if (!voucher) {
     throw new ApiError(httpStatus.NOT_FOUND, "Voucher not found");
   }
-
   return voucher;
 };
 
@@ -81,6 +79,15 @@ const checkVoucher = async (code, cartPrice) => {
   return voucher;
 };
 
+const deleteById = async (id) => {
+  const data = await getVoucherById(id);
+  if (!data) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Voucher not found");
+  }
+  await Voucher.findByIdAndUpdate(data.id, { active: false });
+  return data;
+};
+
 const voucherService = {
   create,
   queryVouchers,
@@ -88,6 +95,7 @@ const voucherService = {
   getVoucherById,
   updateVoucherById,
   checkVoucher,
+  deleteById,
 };
 
 export default voucherService;
