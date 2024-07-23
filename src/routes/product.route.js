@@ -42,7 +42,8 @@ cartRouter.delete(
 );
 =======
 cartRouter.post("/", validate(createProduct), productController.create);
-cartRouter.put("/:id", validate(updateProduct), productController.update);
+cartRouter.put("/:id", productController.update);
+// cartRouter.put("/:id", validate(updateProduct), productController.update);
 cartRouter.delete("/:id", validate(deleteProduct), productController.remove);
 >>>>>>> bb5f790 (update add product)
 export default cartRouter;
