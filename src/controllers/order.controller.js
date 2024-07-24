@@ -44,7 +44,7 @@ const create = async(req, res) => {
                 }
             };
         }));
-        const updateResult = await attributeService.updateAttributeMany(documentAttribute);
+        await attributeService.updateAttributeMany(documentAttribute);
         res.status(httpStatus.CREATED).json(order);
     } catch (error) {
         errorMessage(res, error);
@@ -143,14 +143,14 @@ const update = async(req, res) => {
             );
         }
 
-        if (order.orderStatus === 10) {
+        if (order.orderStatus === 9) {
             throw new ApiError(
                 httpStatus.BAD_REQUEST,
                 "Đơn hàng đang trong trạng thái hủy không thay đổi trạng thái đơn hàng"
             );
         }
 
-        if (order.orderStatus === 9) {
+        if (order.orderStatus === 8) {
             throw new ApiError(
                 httpStatus.BAD_REQUEST,
                 "Đơn hàng đã hoàn thành không thay đổi trạng thái đơn hàng"
@@ -171,10 +171,20 @@ const update = async(req, res) => {
         //     );
         //   }
         // }
-
-        order.orderStatus = statusCode;
-        await orderService.updateOrder(orderID, statusCode);
-        res.status(httpStatus.CREATED).json(order);
+        const updateOrder = await orderService.updateOrder(orderID, { orderStatus: statusCode });
+        if (updateOrder.orderStatus === 9) {
+            const documentAttribute = await Promise.all(updateOrder.productsOrder.map(async(orderItem) => {
+                const attribute = await attributeService.getAttributeByID(orderItem.attribute); // Tìm kiếm attribute
+                return {
+                    updateOne: {
+                        filter: { _id: attribute._id }, // Điều kiện lọc dựa trên _id
+                        update: { $set: { stock: attribute.stock + orderItem.quantity } } // Cập nhật quantity
+                    }
+                };
+            }));
+            await attributeService.updateAttributeMany(documentAttribute);
+        }
+        res.status(httpStatus.CREATED).json(updateOrder);
     } catch (error) {
         errorMessage(res, error);
     }

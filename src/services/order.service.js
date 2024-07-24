@@ -1,26 +1,27 @@
 import Order from "../models/Orders.model.js";
 
 const createOrder = (bodyOrder) => {
-  return Order.create(bodyOrder);
+    return Order.create(bodyOrder);
 };
 
 const getOrders = (filter, options) => {
-  return Order.paginate(filter, options);
+    return Order.paginate(filter, options);
 };
 
 const getOrderByID = (orderID) => {
-  return Order.findById(orderID);
+    return Order.findById(orderID);
 };
 
 const updateOrder = (orderID, bodyOrder) => {
-  return Order.findByIdAndUpdate(orderID, bodyOrder);
+    console.log(bodyOrder);
+    return Order.findByIdAndUpdate(orderID, bodyOrder, { new: true });
 };
 
 const orderService = {
-  createOrder,
-  getOrders,
-  getOrderByID,
-  updateOrder,
+    createOrder,
+    getOrders,
+    getOrderByID,
+    updateOrder,
 };
 
 export default orderService;
