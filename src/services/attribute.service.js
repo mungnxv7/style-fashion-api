@@ -1,19 +1,24 @@
 import Attributes from "../models/attribute.model.js";
 
-const getAttributeByID = async (attributeID) => {
-  return await Attributes.findById(attributeID);
+const getAttributeByID = async(attributeID) => {
+    return await Attributes.findById(attributeID);
 };
-const createAttributeMany = async (attributes) => {
-  return await Attributes.insertMany(attributes);
+const createAttributeMany = async(attributes) => {
+    return await Attributes.insertMany(attributes);
 };
-const deleteAttributeMany = async (attributes) => {
-  return await Attributes.deleteMany({ _id: { $in: attributes } });
+
+const updateAttributeMany = async(attributes) => {
+    return await Attributes.bulkWrite(attributes);
+};
+const deleteAttributeMany = async(attributes) => {
+    return await Attributes.deleteMany({ _id: { $in: attributes } });
 };
 
 const attributeService = {
-  getAttributeByID,
-  createAttributeMany,
-  deleteAttributeMany,
+    getAttributeByID,
+    createAttributeMany,
+    deleteAttributeMany,
+    updateAttributeMany
 };
 
 export default attributeService;

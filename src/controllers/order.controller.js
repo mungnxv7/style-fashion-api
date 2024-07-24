@@ -11,165 +11,182 @@ import paymentCotroller from "./payment.controller.js";
 import dotenv from "dotenv";
 import axios from "axios";
 import orderStatusService from "../services/orderStatus.service.js";
+import cartService from "../services/cart.service.js";
+import attributeService from "../services/attribute.service.js";
+import mongoose from "mongoose";
 dotenv.config();
 
-const create = async (req, res) => {
-  try {
-    const { user } = req.body;
-    const body = req.body;
-    const userData = await userService.getUserById(user);
-    if (!userData) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+const create = async(req, res) => {
+    try {
+        const { user, productsOrder, voucher } = req.body;
+        const userData = await userService.getUserById(user);
+        if (!userData) {
+            throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+        }
+        const carts = await cartService.getCartsByIdUser(user);
+        const validProducts = productsOrder.every((orderItem) => {
+            const foundCartItem = carts.products_cart.find(cartItem =>
+                cartItem.product["_id"].toString() === (orderItem.productId || "")
+            );
+            return !!foundCartItem; // Trả về true nếu tìm thấy sản phẩm trong giỏ hàng, ngược lại false
+        });
+        if (!validProducts) {
+            throw new ApiError(httpStatus.NOT_FOUND, "Some products not found in carts");
+        }
+        const orderData = {...req.body, orderCode: "#" + randomatic("0", 6), voucher: voucher === "" ? null : voucher };
+        const order = await orderService.createOrder(orderData);
+        const documentAttribute = await Promise.all(order.productsOrder.map(async(orderItem) => {
+            const attribute = await attributeService.getAttributeByID(orderItem.attribute); // Tìm kiếm attribute
+            return {
+                updateOne: {
+                    filter: { _id: attribute._id }, // Điều kiện lọc dựa trên _id
+                    update: { $set: { stock: attribute.stock - orderItem.quantity } } // Cập nhật quantity
+                }
+            };
+        }));
+        const updateResult = await attributeService.updateAttributeMany(documentAttribute);
+        res.status(httpStatus.CREATED).json(order);
+    } catch (error) {
+        errorMessage(res, error);
     }
-    if (body.voucher === "") {
-      body.voucher = null;
-    }
-    const order_code = "#" + randomatic("0", 6);
-    body.orderCode = order_code;
-    const order = await orderService.createOrder(body);
-    res.status(httpStatus.CREATED).json(order);
-  } catch (error) {
-    errorMessage(res, error);
-  }
 };
 
-const createVNPAYOrder = async (req, res) => {
-  try {
-    const { user } = req.body;
-    const body = req.body;
-    const userData = await userService.getUserById(user);
-    if (!userData) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
-    }
-    if (body.voucher === "") {
-      body.voucher = null;
-    }
-    body.orderStatus = 0;
-    const order_code = "#" + randomatic("0", 6);
-    body.orderCode = order_code;
-    const order = await orderService.createOrder(body);
-    const urlData = await axios.post(
-      `${process.env.BASE_API}/payments/create_payment_url`,
-      {
-        amount: order.totalPrice,
-        orderCode: order.id,
-        bankCode: "",
-        language: "vn",
-      }
-    );
-    res.status(httpStatus.CREATED).json({ url: urlData.data.url });
-  } catch (error) {
-    console.log(error);
+const createVNPAYOrder = async(req, res) => {
+    try {
+        const { user } = req.body;
+        const body = req.body;
+        const userData = await userService.getUserById(user);
+        if (!userData) {
+            throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+        }
+        if (body.voucher === "") {
+            body.voucher = null;
+        }
+        body.orderStatus = 0;
+        const order_code = "#" + randomatic("0", 6);
+        body.orderCode = order_code;
+        const order = await orderService.createOrder(body);
+        const urlData = await axios.post(
+            `${process.env.BASE_API}/payments/create_payment_url`, {
+                amount: order.totalPrice,
+                orderCode: order.id,
+                bankCode: "",
+                language: "vn",
+            }
+        );
+        res.status(httpStatus.CREATED).json({ url: urlData.data.url });
+    } catch (error) {
+        console.log(error);
 
-    errorMessage(res, error);
-  }
+        errorMessage(res, error);
+    }
 };
 
-const getOrderByUserID = async (req, res) => {
-  try {
-    const { userID } = req.params;
-    const filter = { ...pickFilter(req.query, ["orderCode"]), user: userID };
-    const options = pickOption(req.query, ["sortBy", "limit", "page"]);
-    const user = await userService.getUserById(userID);
-    if (!user) {
-      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+const getOrderByUserID = async(req, res) => {
+    try {
+        const { userID } = req.params;
+        const filter = {...pickFilter(req.query, ["orderCode"]), user: userID };
+        const options = pickOption(req.query, ["sortBy", "limit", "page"]);
+        const user = await userService.getUserById(userID);
+        if (!user) {
+            throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+        }
+        const orders = await orderService.getOrders(filter, options);
+        orders.results = mapOrderStatuses(orders.results);
+        res.status(httpStatus.OK).json(orders);
+    } catch (error) {
+        errorMessage(res, error);
     }
-    const orders = await orderService.getOrders(filter, options);
-    orders.results = mapOrderStatuses(orders.results);
-    res.status(httpStatus.OK).json(orders);
-  } catch (error) {
-    errorMessage(res, error);
-  }
 };
 
-const getAll = async (req, res) => {
-  try {
-    const filter = pickFilter(req.query, ["orderCode"]);
-    const options = pickOption(req.query, ["sortBy", "limit", "page"]);
-    const orders = await orderService.getOrders(filter, options);
-    orders.results = mapOrderStatuses(orders.results);
-    res.status(httpStatus.OK).json(orders);
-  } catch (error) {
-    errorMessage(res, error);
-  }
+const getAll = async(req, res) => {
+    try {
+        const filter = pickFilter(req.query, ["orderCode"]);
+        const options = pickOption(req.query, ["sortBy", "limit", "page"]);
+        const orders = await orderService.getOrders(filter, options);
+        orders.results = mapOrderStatuses(orders.results);
+        res.status(httpStatus.OK).json(orders);
+    } catch (error) {
+        errorMessage(res, error);
+    }
 };
 
-const getDetail = async (req, res) => {
-  try {
-    const { orderID } = req.params;
-    const order = await orderService.getOrderByID(orderID);
-    const status = paymentStatusValue.find(
-      (status) => status.code === order.orderStatus
-    );
-    res.status(httpStatus.OK).json({ ...order._doc, orderStatus: status });
-  } catch (error) {
-    errorMessage(res, error);
-  }
+const getDetail = async(req, res) => {
+    try {
+        const { orderID } = req.params;
+        const order = await orderService.getOrderByID(orderID);
+        const status = paymentStatusValue.find(
+            (status) => status.code === order.orderStatus
+        );
+        res.status(httpStatus.OK).json({...order._doc, orderStatus: status });
+    } catch (error) {
+        errorMessage(res, error);
+    }
 };
 
-const update = async (req, res) => {
-  try {
-    const { orderID } = req.params;
-    const statusCode = req.body.orderStatus;
-    const order = await orderService.getOrderByID(orderID);
+const update = async(req, res) => {
+    try {
+        const { orderID } = req.params;
+        const statusCode = req.body.orderStatus;
+        const order = await orderService.getOrderByID(orderID);
 
-    if (!order) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Không tìm thấy đơn hàng");
+        if (!order) {
+            throw new ApiError(httpStatus.NOT_FOUND, "Không tìm thấy đơn hàng");
+        }
+
+        const orderStatus = await orderStatusService.queryOrderStatus();
+
+        if (!orderStatus.find((status) => status.code === statusCode)) {
+            throw new ApiError(
+                httpStatus.BAD_REQUEST,
+                "Trạng thái đơn hàng không khớp với hệ thống!"
+            );
+        }
+
+        if (order.orderStatus === 10) {
+            throw new ApiError(
+                httpStatus.BAD_REQUEST,
+                "Đơn hàng đang trong trạng thái hủy không thay đổi trạng thái đơn hàng"
+            );
+        }
+
+        if (order.orderStatus === 9) {
+            throw new ApiError(
+                httpStatus.BAD_REQUEST,
+                "Đơn hàng đã hoàn thành không thay đổi trạng thái đơn hàng"
+            );
+        }
+
+        // if (
+        //   (body.orderStatus !== 7 && order.orderStatus <= 2) ||
+        //   order.orderStatus > 2
+        // ) {
+        //   if (
+        //     body.orderStatus < order.orderStatus ||
+        //     body.orderStatus > order.orderStatus + 1
+        //   ) {
+        //     throw new ApiError(
+        //       httpStatus.BAD_REQUEST,
+        //       "Không thể chuyển về trạng thái trước và trạng thái phải được thay đổi theo thứ tự"
+        //     );
+        //   }
+        // }
+
+        order.orderStatus = statusCode;
+        await orderService.updateOrder(orderID, statusCode);
+        res.status(httpStatus.CREATED).json(order);
+    } catch (error) {
+        errorMessage(res, error);
     }
-
-    const orderStatus = await orderStatusService.queryOrderStatus();
-
-    if (!orderStatus.find((status) => status.code === statusCode)) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Trạng thái đơn hàng không khớp với hệ thống!"
-      );
-    }
-
-    if (order.orderStatus === 10) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Đơn hàng đang trong trạng thái hủy không thay đổi trạng thái đơn hàng"
-      );
-    }
-
-    if (order.orderStatus === 9) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Đơn hàng đã hoàn thành không thay đổi trạng thái đơn hàng"
-      );
-    }
-
-    // if (
-    //   (body.orderStatus !== 7 && order.orderStatus <= 2) ||
-    //   order.orderStatus > 2
-    // ) {
-    //   if (
-    //     body.orderStatus < order.orderStatus ||
-    //     body.orderStatus > order.orderStatus + 1
-    //   ) {
-    //     throw new ApiError(
-    //       httpStatus.BAD_REQUEST,
-    //       "Không thể chuyển về trạng thái trước và trạng thái phải được thay đổi theo thứ tự"
-    //     );
-    //   }
-    // }
-
-    order.orderStatus = statusCode;
-    await orderService.updateOrder(orderID, statusCode);
-    res.status(httpStatus.CREATED).json(order);
-  } catch (error) {
-    errorMessage(res, error);
-  }
 };
 
 const orderController = {
-  create,
-  createVNPAYOrder,
-  getOrderByUserID,
-  getAll,
-  getDetail,
-  update,
+    create,
+    createVNPAYOrder,
+    getOrderByUserID,
+    getAll,
+    getDetail,
+    update,
 };
 
 export default orderController;
