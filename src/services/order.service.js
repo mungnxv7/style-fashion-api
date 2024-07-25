@@ -13,7 +13,6 @@ const getOrderByID = (orderID) => {
 };
 
 const updateOrder = (orderID, bodyOrder) => {
-    console.log(bodyOrder);
     return Order.findByIdAndUpdate(orderID, bodyOrder, { new: true });
 };
 

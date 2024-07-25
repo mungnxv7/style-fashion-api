@@ -7,13 +7,11 @@ import { pickFilter, pickOption } from "../utils/pick.js";
 import errorMessage from "../config/error.js";
 import { paymentStatusValue } from "../constants/constant.js";
 import { mapOrderStatuses } from "../utils/orderUtils.js";
-import paymentCotroller from "./payment.controller.js";
 import dotenv from "dotenv";
 import axios from "axios";
 import orderStatusService from "../services/orderStatus.service.js";
 import cartService from "../services/cart.service.js";
 import attributeService from "../services/attribute.service.js";
-import mongoose from "mongoose";
 dotenv.config();
 
 const create = async(req, res) => {
