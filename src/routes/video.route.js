@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import videosController from "../controllers/video.controller.js";
+import { auth } from "../middlewares/auth.js";
 
 const routerVideos = Router();
 const storage = multer.diskStorage({
@@ -19,9 +20,10 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
 });
-routerVideos.post("/", upload.array("videos"), videosController.upload);
+routerVideos.post("/", auth(), upload.array("videos"), videosController.upload);
 routerVideos.delete(
   "/:publicId",
+  auth(),
   //   upload.array("images"),∂
   videosController.remove
 );
@@ -83,6 +85,8 @@ export default routerVideos;
  *   delete:
  *     summary: Delete video by public ID
  *     tags: [Videos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: publicId

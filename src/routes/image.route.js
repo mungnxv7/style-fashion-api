@@ -2,6 +2,7 @@ import { Router } from "express";
 import imagesController from "../controllers/image.controller.js";
 import multer from "multer";
 import path from "path";
+import { auth } from "../middlewares/auth.js";
 
 const routerImages = Router();
 const storage = multer.diskStorage({
@@ -19,9 +20,10 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
 });
-routerImages.post("/", upload.array("images"), imagesController.upload);
+routerImages.post("/", auth(), upload.array("images"), imagesController.upload);
 routerImages.delete(
   "/:publicId",
+  auth(),
   //   upload.array("images"),∂
   imagesController.remove
 );
@@ -83,6 +85,8 @@ export default routerImages;
  *   delete:
  *     summary: Delete image by public ID
  *     tags: [Images]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: publicId

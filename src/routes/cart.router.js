@@ -7,14 +7,41 @@ import {
   getCart,
   updateProductCart,
 } from "../validations/cart.validation.js";
+import { auth } from "../middlewares/auth.js";
 const cartRouter = express.Router();
 
-cartRouter.get("/", validate(getCart), cartController.getCart);
-cartRouter.post("/", validate(addToCart), cartController.addToCart);
-cartRouter.put("/", validate(updateProductCart), cartController.updateCart);
-cartRouter.delete("/", validate(deleteProductCart), cartController.remove);
+cartRouter.get(
+  "/",
+  auth("manageCarts"),
+  validate(getCart),
+  cartController.getCart
+);
+cartRouter.post(
+  "/",
+  auth("manageCarts"),
+  validate(addToCart),
+  cartController.addToCart
+);
+cartRouter.put(
+  "/",
+  auth("manageCarts"),
+  validate(updateProductCart),
+  cartController.updateCart
+);
+cartRouter.delete(
+  "/",
+  auth("manageCarts"),
+  validate(deleteProductCart),
+  cartController.remove
+);
 export default cartRouter;
 
+/**
+ * @swagger
+ * tags:
+ *   name: Carts
+ *   description: API operations related to carts
+ */
 /**
  * @swagger
  * /carts:

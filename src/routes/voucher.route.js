@@ -10,9 +10,15 @@ import {
   updateVoucher,
   useVoucher,
 } from "../validations/voucher.validation.js";
+import { auth } from "../middlewares/auth.js";
 
 const routerVoucher = Router();
-routerVoucher.post("/", validate(createVoucher), voucherCotroller.create);
+routerVoucher.post(
+  "/",
+  auth("manageVoucher"),
+  validate(createVoucher),
+  voucherCotroller.create
+);
 routerVoucher.get("/:id", validate(getVoucher), voucherCotroller.getDetail);
 routerVoucher.get("/", validate(getVouchers), voucherCotroller.getAll);
 routerVoucher.post(
@@ -26,7 +32,12 @@ routerVoucher.post(
   validate(useVoucher),
   voucherCotroller.useVoucher
 );
-routerVoucher.delete("/:id", validate(deleteVoucher), voucherCotroller.remove);
+routerVoucher.delete(
+  "/:id",
+  auth("manageVoucher"),
+  validate(deleteVoucher),
+  voucherCotroller.remove
+);
 
 export default routerVoucher;
 
@@ -44,8 +55,6 @@ export default routerVoucher;
  *     summary: Get all vouchers
  *     description: Only admins can retrieve all vouchers.
  *     tags: [Vouchers]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: The list of the voucher
@@ -136,8 +145,6 @@ export default routerVoucher;
  *   post:
  *     summary: Check voucher
  *     tags: [Vouchers]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -169,8 +176,6 @@ export default routerVoucher;
  *   post:
  *     summary: Use voucher
  *     tags: [Vouchers]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

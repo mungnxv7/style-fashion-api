@@ -19,8 +19,6 @@ export default routerCity;
  *     summary: Get all cities
  *     description: Only admins can retrieve all cities.
  *     tags: [Cities]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: The list of the city

@@ -8,6 +8,7 @@ import {
   getOrdersByUser,
   updateOrder,
 } from "../validations/order.validation.js";
+import { auth } from "../middlewares/auth.js";
 const orderRouter = express.Router();
 
 orderRouter.post("/", validate(createOrder), orderController.create);
@@ -16,18 +17,30 @@ orderRouter.post(
   validate(createOrder),
   orderController.createVNPAYOrder
 );
-orderRouter.get("/", validate(getOrders), orderController.getAll);
+orderRouter.get(
+  "/",
+  auth("manageOrders"),
+  validate(getOrders),
+  orderController.getAll
+);
 orderRouter.get(
   "/user/:userID",
+  auth(),
   validate(getOrdersByUser),
   orderController.getOrderByUserID
 );
 orderRouter.get(
   "/detail/:orderID",
+  auth(),
   validate(getOrderDetail),
   orderController.getDetail
 );
-orderRouter.put("/:orderID", validate(updateOrder), orderController.update);
+orderRouter.put(
+  "/:orderID",
+  auth("manageOrders"),
+  validate(updateOrder),
+  orderController.update
+);
 export default orderRouter;
 
 /**
@@ -131,6 +144,8 @@ export default orderRouter;
  *   get:
  *     summary: Get details of a specific order
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: orderID
@@ -150,8 +165,6 @@ export default orderRouter;
  *   post:
  *     summary: Create a new order
  *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -285,8 +298,6 @@ export default orderRouter;
  *   post:
  *     summary: Create a new order
  *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -418,7 +429,7 @@ export default orderRouter;
  * @swagger
  * /orders/{orderID}:
  *   put:
- *     summary: Update a product
+ *     summary: Update status
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []

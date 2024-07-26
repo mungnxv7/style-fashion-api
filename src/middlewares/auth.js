@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import config from "../config/config.js";
 import { roleRights } from "../config/roles.js";
 import userService from "../services/user.service.js";
+import errorMessage from "../config/error.js";
 // import ApiError from "../utils/ApiError";
 // import { roleRights } from "../config/roles";
 // import config from "../config/config";
@@ -40,6 +41,9 @@ export const auth =
       req.user = user;
       if (requiredRights.length) {
         const userRights = roleRights.get(req.user.role);
+        if (!userRights) {
+          throw new ApiError(httpStatus.FORBIDDEN, "Forbidden");
+        }
         const hasRequiredRights = requiredRights.every((requiredRight) =>
           userRights.includes(requiredRight)
         );
@@ -49,6 +53,7 @@ export const auth =
       }
       next();
     } catch (err) {
-      next(err);
+      errorMessage(res, err);
+      // next(err);
     }
   };
