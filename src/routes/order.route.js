@@ -187,7 +187,10 @@ export default orderRouter;
  *                     imageAtrribute:
  *                       type: string
  *                       example: "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/470910/item/vngoods_01_470910.jpg?width=750"
- *                     attribute:
+ *                     attributeName:
+ *                       type: string
+ *                       example: "Red - XL"
+ *                     attributeId:
  *                       type: string
  *                       example: "66521a0c4595adbe4d9a04b6"
  *                 required: true

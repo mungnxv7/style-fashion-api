@@ -13,7 +13,8 @@ export const createOrder = {
           slug: Joi.string().required(),
           imageProduct: Joi.string().required(),
           imageAtrribute: Joi.string().allow(""),
-          attribute: Joi.string().required(),
+          attributeName: Joi.string().required(),
+          atrributeId: Joi.string().required().custom(objectId),
         })
       )
       .required(),
