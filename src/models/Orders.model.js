@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema(
           },
           price: { type: Number, required: true, trim: true },
           attributeName: { type: String, required: true, trim: true },
-          atrributeId: {
+          attributeId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Atrribute",
             required: true,

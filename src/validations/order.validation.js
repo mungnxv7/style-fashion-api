@@ -14,7 +14,7 @@ export const createOrder = {
           imageProduct: Joi.string().required(),
           imageAtrribute: Joi.string().allow(""),
           attributeName: Joi.string().required(),
-          atrributeId: Joi.string().required().custom(objectId),
+          attributeId: Joi.string().required().custom(objectId),
         })
       )
       .required(),
