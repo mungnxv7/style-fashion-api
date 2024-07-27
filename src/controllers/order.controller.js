@@ -33,7 +33,7 @@ const create = async (req, res) => {
   }
 };
 
-const createVNPAYOrder = async (req, res) => {
+const createVnpayOrder = async (req, res) => {
   try {
     const { user } = req.body;
     const body = req.body;
@@ -59,8 +59,29 @@ const createVNPAYOrder = async (req, res) => {
     );
     res.status(httpStatus.CREATED).json({ url: urlData.data.url });
   } catch (error) {
-    console.log(error);
+    errorMessage(res, error);
+  }
+};
 
+const vnpayOrderPayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getOrderByID(id);
+    if (!order) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Order not found");
+    }
+    const urlData = await axios.post(
+      `${process.env.BASE_API}/payments/create_payment_url`,
+      // "http://localhost:8000/api/v1/payments/create_payment_url",
+      {
+        amount: order.totalPrice,
+        orderCode: order.id,
+        bankCode: "",
+        language: "vn",
+      }
+    );
+    res.status(httpStatus.CREATED).json({ url: urlData.data.url });
+  } catch (error) {
     errorMessage(res, error);
   }
 };
@@ -165,7 +186,8 @@ const update = async (req, res) => {
 
 const orderController = {
   create,
-  createVNPAYOrder,
+  createVnpayOrder,
+  vnpayOrderPayment,
   getOrderByUserID,
   getAll,
   getDetail,

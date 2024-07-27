@@ -6,6 +6,7 @@ import {
   getOrderDetail,
   getOrders,
   getOrdersByUser,
+  orderPayment,
   updateOrder,
 } from "../validations/order.validation.js";
 import { auth } from "../middlewares/auth.js";
@@ -15,7 +16,13 @@ orderRouter.post("/", validate(createOrder), orderController.create);
 orderRouter.post(
   "/vnpay",
   validate(createOrder),
-  orderController.createVNPAYOrder
+  orderController.createVnpayOrder
+);
+orderRouter.post(
+  "/vnpay-order-payment/:id",
+  auth(),
+  validate(orderPayment),
+  orderController.vnpayOrderPayment
 );
 orderRouter.get(
   "/",
@@ -290,6 +297,27 @@ export default orderRouter;
  *                 message:
  *                   type: string
  *                   example: Invalid request parameters
+ */
+
+/**
+ * @swagger
+ * /orders/vnpay-order-payment/{id}:
+ *   post:
+ *     summary: Order payment vnpay
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The id of the order
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
  */
 
 /**

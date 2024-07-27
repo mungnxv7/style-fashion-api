@@ -45,7 +45,6 @@ const createPaymentUrl = async (req, res) => {
     // let amount = 200000;
     let amount = req.body.amount;
     let bankCode = "";
-
     // let locale = "vn";
     let locale = req.body.language;
     if (locale === null || locale === "") {
@@ -58,7 +57,7 @@ const createPaymentUrl = async (req, res) => {
     vnp_Params["vnp_TmnCode"] = tmnCode;
     vnp_Params["vnp_Locale"] = locale;
     vnp_Params["vnp_CurrCode"] = currCode;
-    vnp_Params["vnp_TxnRef"] = orderCode;
+    vnp_Params["vnp_TxnRef"] = orderCode + `-${orderId}`;
     vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderCode;
     vnp_Params["vnp_OrderType"] = "other";
     vnp_Params["vnp_Amount"] = amount * 100;
@@ -88,7 +87,7 @@ const vnpayIpn = async (req, res) => {
     let vnp_Params = req.query;
     let secureHash = vnp_Params["vnp_SecureHash"];
 
-    let orderId = vnp_Params["vnp_TxnRef"];
+    let orderId = vnp_Params["vnp_TxnRef"].split("-")[0];
     let amount = vnp_Params["vnp_Amount"];
     let rspCode = vnp_Params["vnp_ResponseCode"];
 
@@ -113,7 +112,7 @@ const vnpayIpn = async (req, res) => {
       //kiểm tra checksum
       if (checkOrder) {
         if (amount / 100 == checkOrder?.totalPrice) {
-          if (checkOrder?.orderStatus == 0) {
+          if (checkOrder?.orderStatus == 0 || checkOrder?.orderStatus == 2) {
             //kiểm tra tình trạng giao dịch trước khi cập nhật tình trạng thanh toán
             if (rspCode == "00") {
               //thanh cong
@@ -125,7 +124,7 @@ const vnpayIpn = async (req, res) => {
               //that bai
               //paymentStatus = '2'
               // Ở đây cập nhật trạng thái giao dịch thanh toán thất bại vào CSDL của bạn
-              await orderService.updateOrder(orderId, { orderStatus: 9 });
+              await orderService.updateOrder(orderId, { orderStatus: 2 });
               res.status(200).json({ RspCode: "00", Message: "Success" });
             }
           } else {
