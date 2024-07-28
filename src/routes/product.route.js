@@ -8,12 +8,8 @@ import {
   getProducts,
   updateAttributeProduct,
   updateProduct,
-<<<<<<< HEAD
 } from "../validations/products.validation.js";
 import { auth } from "../middlewares/auth.js";
-=======
-} from "../validations/product/products.validation.js";
->>>>>>> bb5f790 (update add product)
 const cartRouter = express.Router();
 
 cartRouter.get("/", validate(getProducts), productController.getAll);
@@ -22,7 +18,6 @@ cartRouter.get(
   validate(getProductDetail),
   productController.getDetail
 );
-<<<<<<< HEAD
 cartRouter.post(
   "/",
   auth("manageProducts"),
@@ -41,16 +36,6 @@ cartRouter.delete(
   validate(deleteProduct),
   productController.remove
 );
-=======
-cartRouter.post("/", validate(createProduct), productController.create);
-cartRouter.put("/:id", validate(updateProduct), productController.update);
-cartRouter.put(
-  "/attributes/:id",
-  validate(updateAttributeProduct),
-  productController.updateAttributeProduct
-);
-cartRouter.delete("/:id", validate(deleteProduct), productController.remove);
->>>>>>> bb5f790 (update add product)
 export default cartRouter;
 
 /**
