@@ -2,10 +2,10 @@ import Order from "../models/Orders.model.js";
 import { generateCode } from "../utils/generateRandomCode.js";
 
 const createOrder = (bodyOrder) => {
-  const orderCode = generateCode(9);
+  const orderCode = generateCode(12);
   const orderData = {
     ...bodyOrder,
-    orderCode: "#" + orderCode,
+    orderCode: "#" + orderCode.toUpperCase(),
     voucher: bodyOrder.voucher === "" ? null : bodyOrder.voucher,
   };
   return Order.create(orderData);

@@ -219,10 +219,10 @@ export default orderRouter;
  *               user:
  *                 type: string
  *                 example: "66497d8f4f4928b722bc2832"
- *               historicalCost:
+ *               subTotal:
  *                 type: number
  *                 example: 2000
- *               salePrice:
+ *               discountAmount:
  *                 type: number
  *                 example: 5000
  *                 default: 0
@@ -240,10 +240,7 @@ export default orderRouter;
  *                 type: string
  *                 enum: [VNPAY, COD]
  *                 example: "COD"
- *               paymentId:
- *                 type: string
- *                 example: string
- *               voucher:
+ *               voucherCode:
  *                 type: string
  *                 example: "66497d8f4f4928b722bc2832"
  *             required:

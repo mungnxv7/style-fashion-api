@@ -29,14 +29,13 @@ export const createOrder = {
       })
       .required(),
     user: Joi.string().required().custom(objectId),
-    historicalCost: Joi.number().required(),
-    salePrice: Joi.number().default(0),
+    subTotal: Joi.number().required(),
+    discountAmount: Joi.number().default(0),
     shippingFee: Joi.number().required().default(0),
     note: Joi.string().allow("").default(""),
     totalPrice: Joi.number().required(),
     paymentMethod: Joi.string().required().valid("VNPAY", "COD"),
-    paymentId: Joi.string().allow(""),
-    voucher: Joi.string().allow("").custom(objectId),
+    voucherCode: Joi.string().allow(""),
   }),
 };
 
