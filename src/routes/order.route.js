@@ -6,28 +6,48 @@ import {
   getOrderDetail,
   getOrders,
   getOrdersByUser,
+  orderPayment,
   updateOrder,
 } from "../validations/order.validation.js";
+import { auth } from "../middlewares/auth.js";
 const orderRouter = express.Router();
 
 orderRouter.post("/", validate(createOrder), orderController.create);
 orderRouter.post(
   "/vnpay",
   validate(createOrder),
-  orderController.createVNPAYOrder
+  orderController.createVnpayOrder
 );
-orderRouter.get("/", validate(getOrders), orderController.getAll);
+orderRouter.post(
+  "/vnpay-order-payment/:id",
+  auth(),
+  validate(orderPayment),
+  orderController.vnpayOrderPayment
+);
+orderRouter.get(
+  "/",
+  auth("manageOrders"),
+  validate(getOrders),
+  orderController.getAll
+);
 orderRouter.get(
   "/user/:userID",
+  auth(),
   validate(getOrdersByUser),
   orderController.getOrderByUserID
 );
 orderRouter.get(
   "/detail/:orderID",
+  auth(),
   validate(getOrderDetail),
   orderController.getDetail
 );
-orderRouter.put("/:orderID", validate(updateOrder), orderController.update);
+orderRouter.put(
+  "/:orderID",
+  auth("manageOrders"),
+  validate(updateOrder),
+  orderController.update
+);
 export default orderRouter;
 
 /**
@@ -131,6 +151,8 @@ export default orderRouter;
  *   get:
  *     summary: Get details of a specific order
  *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: orderID
@@ -150,8 +172,6 @@ export default orderRouter;
  *   post:
  *     summary: Create a new order
  *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -281,12 +301,31 @@ export default orderRouter;
 
 /**
  * @swagger
+ * /orders/vnpay-order-payment/{id}:
+ *   post:
+ *     summary: Order payment vnpay
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The id of the order
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             example: {}
+ */
+
+/**
+ * @swagger
  * /orders/vnpay:
  *   post:
  *     summary: Create a new order
  *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -418,7 +457,7 @@ export default orderRouter;
  * @swagger
  * /orders/{orderID}:
  *   put:
- *     summary: Update a product
+ *     summary: Update status
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []

@@ -9,18 +9,45 @@ import {
   updateUser,
   updateUserProfile,
 } from "../validations/user.validation.js";
+import { auth } from "../middlewares/auth.js";
 
 const routerUser = Router();
-routerUser.get("/", validate(getUsers), usersController.getAll);
-routerUser.get("/:id", validate(getUser), usersController.getDetail);
-routerUser.post("/", validate(createUser), usersController.create);
-routerUser.put("/:id", validate(updateUser), usersController.update);
+routerUser.get(
+  "/",
+  auth("manageUsers"),
+  validate(getUsers),
+  usersController.getAll
+);
+routerUser.get(
+  "/:id",
+  auth("manageUsers"),
+  validate(getUser),
+  usersController.getDetail
+);
+routerUser.post(
+  "/",
+  auth("manageUsers"),
+  validate(createUser),
+  usersController.create
+);
+routerUser.put(
+  "/:id",
+  auth("manageUsers"),
+  validate(updateUser),
+  usersController.update
+);
 routerUser.put(
   "/profile/:id",
+  auth(),
   validate(updateUserProfile),
   usersController.updateProfile
 );
-routerUser.delete("/:id", validate(deleteUser), usersController.remove);
+routerUser.delete(
+  "/:id",
+  auth("manageUsers"),
+  validate(deleteUser),
+  usersController.remove
+);
 export default routerUser;
 
 /**
@@ -83,6 +110,8 @@ export default routerUser;
  *   get:
  *     summary: Get details of a specific users
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

@@ -98,7 +98,7 @@ const create = async (req, res) => {
   }
 };
 
-const createVNPAYOrder = async (req, res) => {
+const createVnpayOrder = async (req, res) => {
   try {
     const order = await handleCreateOrder(req.body);
     console.log(order);
@@ -233,7 +233,8 @@ const update = async (req, res) => {
 
 const orderController = {
   create,
-  createVNPAYOrder,
+  createVnpayOrder,
+  vnpayOrderPayment,
   getOrderByUserID,
   getAll,
   getDetail,

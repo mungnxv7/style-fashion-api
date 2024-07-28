@@ -21,8 +21,6 @@ export default routerWard;
  *     summary: Get all wards
  *     description: Only admins can retrieve all wards.
  *     tags: [Cities]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: districtId

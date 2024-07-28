@@ -17,13 +17,30 @@ import {
   updateStatusAddress,
 } from "../validations/address.validation.js";
 import addressCotroller from "../controllers/shippingAddress.controller.js";
+import { auth } from "../middlewares/auth.js";
 
 const routerAddress = Router();
-routerAddress.get("/", validate(getAddress), addressCotroller.getAll);
-routerAddress.post("/", validate(createAddress), addressCotroller.create);
-routerAddress.put("/", validate(updateAddress), addressCotroller.update);
+routerAddress.get(
+  "/",
+  auth("manageAddress"),
+  validate(getAddress),
+  addressCotroller.getAll
+);
+routerAddress.post(
+  "/",
+  auth("manageAddress"),
+  validate(createAddress),
+  addressCotroller.create
+);
+routerAddress.put(
+  "/",
+  auth("manageAddress"),
+  validate(updateAddress),
+  addressCotroller.update
+);
 routerAddress.post(
   "/update-status",
+  auth("manageAddress"),
   validate(updateStatusAddress),
   addressCotroller.updateStatus
 );

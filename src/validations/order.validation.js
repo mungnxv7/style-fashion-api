@@ -39,6 +39,12 @@ export const createOrder = {
   }),
 };
 
+export const orderPayment = {
+  params: Joi.object().keys({
+    id: Joi.string().required().custom(objectId),
+  }),
+};
+
 export const getOrdersByUser = {
   params: Joi.object().keys({
     userID: Joi.string().required().custom(objectId),

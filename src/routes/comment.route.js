@@ -7,6 +7,7 @@ import {
   updateComment,
 } from "../validations/comment.validation.js";
 import commentController from "../controllers/comment.controller.js";
+import { auth } from "../middlewares/auth.js";
 
 const routerComment = Router();
 routerComment.get(
@@ -14,9 +15,24 @@ routerComment.get(
   validate(getCommentByProductId),
   commentController.getCommentsByProductId
 );
-routerComment.post("/", validate(createComment), commentController.create);
-routerComment.put("/:id", validate(updateComment), commentController.update);
-routerComment.delete("/:id", validate(deleteComment), commentController.delete);
+routerComment.post(
+  "/",
+  auth(),
+  validate(createComment),
+  commentController.create
+);
+routerComment.put(
+  "/:id",
+  auth(),
+  validate(updateComment),
+  commentController.update
+);
+routerComment.delete(
+  "/:id",
+  auth(),
+  validate(deleteComment),
+  commentController.delete
+);
 
 export default routerComment;
 

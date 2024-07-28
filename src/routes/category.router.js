@@ -8,6 +8,7 @@ import {
   getCategories,
 } from "../validations/category.validation.js";
 import validate from "../middlewares/validate.js";
+import { auth } from "../middlewares/auth.js";
 
 const categoryRouter = express.Router();
 
@@ -17,14 +18,21 @@ categoryRouter.get(
   validate(getCategory),
   categoriesController.getDetail
 );
-categoryRouter.post("/", validate(createCatgory), categoriesController.create);
+categoryRouter.post(
+  "/",
+  auth("manageCategories"),
+  validate(createCatgory),
+  categoriesController.create
+);
 categoryRouter.put(
   "/:id",
+  auth("manageCategories"),
   validate(updateCategory),
   categoriesController.update
 );
 categoryRouter.delete(
   "/:id",
+  auth("manageCategories"),
   validate(deleteCategory),
   categoriesController.delete
 );

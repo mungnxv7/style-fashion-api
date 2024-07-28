@@ -21,8 +21,6 @@ export default routerDistrict;
  *     summary: Get all districts
  *     description: Only admins can retrieve all districts.
  *     tags: [Cities]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: cityId

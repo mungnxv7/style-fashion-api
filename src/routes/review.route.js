@@ -7,18 +7,26 @@ import {
   getReviews,
   restoreOrApproveReview,
 } from "../validations/review.validation.js";
+import { auth } from "../middlewares/auth.js";
 
 const routerReview = Router();
 routerReview.get("/", validate(getReviews), reviewCotroller.getAll);
-routerReview.get("/v2", validate(getReviews), reviewCotroller.getAllAdmin);
-routerReview.post("/", validate(createReview), reviewCotroller.create);
+routerReview.get(
+  "/v2",
+  auth("manageReviews"),
+  validate(getReviews),
+  reviewCotroller.getAllAdmin
+);
+routerReview.post("/", auth(), validate(createReview), reviewCotroller.create);
 routerReview.post(
   "/approve",
+  auth("manageReviews"),
   validate(restoreOrApproveReview),
   reviewCotroller.approve
 );
 routerReview.post(
   "/restore",
+  auth("manageReviews"),
   validate(restoreOrApproveReview),
   reviewCotroller.restore
 );
@@ -39,8 +47,6 @@ export default routerReview;
  *     summary: Get all reviews
  *     description: Get all reviews.
  *     tags: [Review]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: productId
@@ -128,6 +134,8 @@ export default routerReview;
  *   post:
  *     summary: Approve review
  *     tags: [Review]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: reviewId
@@ -147,6 +155,8 @@ export default routerReview;
  *   post:
  *     summary: Restore review
  *     tags: [Review]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: reviewId

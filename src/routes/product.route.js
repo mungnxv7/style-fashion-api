@@ -8,6 +8,7 @@ import {
   getProducts,
   updateProduct,
 } from "../validations/products.validation.js";
+import { auth } from "../middlewares/auth.js";
 const cartRouter = express.Router();
 
 cartRouter.get("/", validate(getProducts), productController.getAll);
@@ -16,9 +17,24 @@ cartRouter.get(
   validate(getProductDetail),
   productController.getDetail
 );
-cartRouter.post("/", validate(createProduct), productController.create);
-cartRouter.put("/:id",validate(updateProduct),productController.update);
-cartRouter.delete("/:id", validate(deleteProduct), productController.remove);
+cartRouter.post(
+  "/",
+  auth("manageProducts"),
+  validate(createProduct),
+  productController.create
+);
+cartRouter.put(
+  "/:id",
+  auth("manageProducts"),
+  validate(updateProduct),
+  productController.update
+);
+cartRouter.delete(
+  "/:id",
+  auth("manageProducts"),
+  validate(deleteProduct),
+  productController.remove
+);
 export default cartRouter;
 
 /**
@@ -35,8 +51,6 @@ export default cartRouter;
  *     summary: Get all product
  *     description: Only admins can retrieve all product.
  *     tags: [Products]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: search
