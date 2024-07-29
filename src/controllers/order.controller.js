@@ -1,5 +1,4 @@
 import httpStatus from "http-status";
-import randomatic from "randomatic";
 import orderService from "../services/order.service.js";
 import userService from "../services/user.service.js";
 import ApiError from "../utils/ApiError.js";
@@ -29,10 +28,6 @@ const handleCreateOrder = async (bodyOrder) => {
       "There are no products in your cart"
     );
   }
-  const isVoucher = await voucherService.checkVoucher(
-    voucherCode,
-    historicalCost
-  );
   const cartMap = new Map();
   carts.products_cart.forEach((itemCart) => {
     if (!itemCart.attribute) {
@@ -67,6 +62,15 @@ const handleCreateOrder = async (bodyOrder) => {
     }
   );
   await Promise.all(isProductOrderInProdcutsColection);
+  if (voucherCode !== "") {
+    const isVoucher = await voucherService.checkVoucher(
+      voucherCode,
+      historicalCost
+    );
+    await voucherService.updateVoucherById(isVoucher.id, {
+      quantity: isVoucher.quantity - 1,
+    });
+  }
   const order = await orderService.createOrder(bodyOrder);
   const documentAttribute = await Promise.all(
     order.productsOrder.map(async (orderItem) => {
@@ -81,9 +85,7 @@ const handleCreateOrder = async (bodyOrder) => {
       };
     })
   );
-  await voucherService.updateVoucherById(isVoucher.id, {
-    quantity: isVoucher.quantity - 1,
-  });
+
   await cartService.removeCartItemsByIds(user, productCartIds);
   await attributeService.updateAttributeMany(documentAttribute);
   return order;
@@ -104,6 +106,29 @@ const createVnpayOrder = async (req, res) => {
     console.log(order);
     const urlData = await axios.post(
       `${process.env.BASE_API}/payments/create_payment_url`,
+      {
+        amount: order.totalPrice,
+        orderCode: order.id,
+        bankCode: "",
+        language: "vn",
+      }
+    );
+    res.status(httpStatus.CREATED).json({ url: urlData.data.url });
+  } catch (error) {
+    errorMessage(res, error);
+  }
+};
+
+const vnpayOrderPayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getOrderByID(id);
+    if (!order) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Order not found");
+    }
+    const urlData = await axios.post(
+      `${process.env.BASE_API}/payments/create_payment_url`,
+      // "http://localhost:8000/api/v1/payments/create_payment_url",
       {
         amount: order.totalPrice,
         orderCode: order.id,
