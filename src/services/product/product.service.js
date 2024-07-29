@@ -1,7 +1,6 @@
 import Product from "../../models/Product/Product.model.js";
 import ApiError from "../../utils/ApiError.js";
 import httpStatus from "http-status";
-import attributeService from "./attribute.service.js";
 
 const getAllProducts = async (filter, options) => {
   const products = await Product.paginate(filter, options);
@@ -30,7 +29,7 @@ const getById = async (id) => {
 
 const getProductBySlug = async (slug) => {
   const product = await Product.findOne({ slug })
-    .populate("attributes")
+    .populate({ path: "attributes", populate: "values" })
     .populate({ path: "categories", select: "-active" })
     .select("-active");
   if (!product) {
