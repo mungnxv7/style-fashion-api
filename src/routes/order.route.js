@@ -207,7 +207,10 @@ export default orderRouter;
  *                     imageAtrribute:
  *                       type: string
  *                       example: "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/470910/item/vngoods_01_470910.jpg?width=750"
- *                     attribute:
+ *                     attributeName:
+ *                       type: string
+ *                       example: "Red - XL"
+ *                     attributeId:
  *                       type: string
  *                       example: "66521a0c4595adbe4d9a04b6"
  *                 required: true
@@ -236,10 +239,10 @@ export default orderRouter;
  *               user:
  *                 type: string
  *                 example: "66497d8f4f4928b722bc2832"
- *               historicalCost:
+ *               subTotal:
  *                 type: number
  *                 example: 2000
- *               salePrice:
+ *               discountAmount:
  *                 type: number
  *                 example: 5000
  *                 default: 0
@@ -257,10 +260,7 @@ export default orderRouter;
  *                 type: string
  *                 enum: [VNPAY, COD]
  *                 example: "COD"
- *               paymentId:
- *                 type: string
- *                 example: string
- *               voucher:
+ *               voucherCode:
  *                 type: string
  *                 example: "66497d8f4f4928b722bc2832"
  *             required:

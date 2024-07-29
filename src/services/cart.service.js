@@ -60,7 +60,6 @@ const updateCartByIdProductCart = async (userId, data) => {
 };
 
 const deleteProductCartById = async (user_id, product_cart_id) => {
-  console.log(user_id, product_cart_id);
   const cart = await Carts.findOne({ user: user_id });
 
   if (!cart) {
@@ -77,10 +76,20 @@ const deleteProductCartById = async (user_id, product_cart_id) => {
   }
 };
 
+const removeCartItemsByIds = async (user_id, productCartIds) => {
+  console.log(productCartIds);
+  const order = await Carts.updateOne(
+    { user: user_id },
+    { $pull: { products_cart: { _id: { $in: productCartIds } } } }
+  );
+  console.log(order);
+};
+
 const cartService = {
   getCartsByIdUser,
   addToCartByIdUser,
   updateCartByIdProductCart,
   deleteProductCartById,
+  removeCartItemsByIds,
 };
 export default cartService;
