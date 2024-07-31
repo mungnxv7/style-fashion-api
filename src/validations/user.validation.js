@@ -4,10 +4,13 @@ import { password, objectId, phoneNumber } from "./custom.validation.js";
 const createUser = {
   body: Joi.object().keys({
     name: Joi.string().required(),
+    image: Joi.string().required(),
     password: Joi.string().required().custom(password),
     email: Joi.string().required().email(),
     phoneNumber: Joi.string().required().custom(phoneNumber),
-    role: Joi.string().required().valid("user", "admin"),
+    role: Joi.string()
+      .required()
+      .valid("admin", "manager", "staff", "customer"),
   }),
 };
 
@@ -38,7 +41,7 @@ const updateUser = {
       name: Joi.string(),
       image: Joi.string(),
       phoneNumber: Joi.string().custom(phoneNumber),
-      role: Joi.string().valid("user", "admin"),
+      role: Joi.string().valid("admin", "manager", "staff", "customer"),
     })
     .min(1),
 };
