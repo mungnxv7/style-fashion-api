@@ -18,6 +18,7 @@ import productTypeRouter from "./productType.router.js";
 import routerOrderStatus from "./orderStatus.route.js";
 import routerVoucher from "./voucher.route.js";
 import routerBlog from "./blog.route.js";
+import routerStatistic from "./statistic.route.js";
 const routes = express.Router();
 
 routes.use("/categories", categoryRouter);
@@ -40,6 +41,7 @@ routes.use("/product-type", productTypeRouter);
 routes.use("/order-status", routerOrderStatus);
 routes.use("/vouchers", routerVoucher);
 routes.use("/blogs", routerBlog);
+routes.use("/statistics", routerStatistic);
 
 export default routes;
 
